@@ -23,23 +23,41 @@ const App = () => {
     }
   };
 
-  const sendOnCLick = () => {
-     const loginInfo = {"email":email, "username":username, "password":password};
+  const emailHandler = (event) => {
+    setEmail(event.target.value);
+    console.log(email);
+  };
+
+  const usernameHandler = (event) => {
+    setUsername(event.target.value);
+  };
+
+  const passwordHandler = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const onSubmitHandler = (event) => {
+    const loginInfo = {"email":email, "username":username, "password":password};
     postLoginInfo(loginInfo);
+    event.preventDefault();
+    setEmail('');
+    setUsername('');
+    setPassword('');
   };
 
   return (
     <Container fluid='lg'>
       <Row>
         <Col>
-          <Form>
+          <Form onSubmit={onSubmitHandler}>
             <div className='mt-2 mb-2'><b>Enter your email, username, and password to register.</b></div>
             <Form.Group className='mb-2'>
               <Form.Label> Email: </Form.Label>
               <Form.Control
                 type='email'
                 placeholder='email'
-                onChange = {event => { setEmail(event.target.value)}}
+                onChange = {emailHandler}
+                value = {email}
               >
             </Form.Control>
             </Form.Group>
@@ -48,7 +66,8 @@ const App = () => {
               <Form.Control
                 type='username'
                 placeholder='username'
-                onChange = {event => {setUsername(event.target.value)}}
+                onChange = {usernameHandler}
+                value = {username}
               >
             </Form.Control>
             </Form.Group>
@@ -57,11 +76,12 @@ const App = () => {
               <Form.Control
                 type='password'
                 placeholder='Password'
-                onChange= { event => {setPassword(event.target.value)}}
+                onChange= {passwordHandler}
+                value = {password}
               ></Form.Control>
             </Form.Group>
+          <Button type='submit'>Submit</Button>
           </Form>
-          <Button type='send' onClick={sendOnCLick()}>Send</Button>
         </Col>
         <Col></Col>
         <Col></Col>
