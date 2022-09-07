@@ -5,20 +5,35 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { useState } from 'react';
-const axios = require('axios').default;
+import { useState, useEffect } from 'react';
+import validator from 'validator';
 
+const axios = require('axios');
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordRepeat, setPasswordRepeat] = useState('');
+  const [doesEmailExistonDb, setEmailExistonDb] = useState(false);
 
   const postLoginInfo = async (_loginInfo) => {
     try{
-      const result = await axios.post('http://localhost:4000/register', _loginInfo);
-      console.log(result);
+      await axios.post('http://localhost:4000/register', _loginInfo);
+    }
+    catch(error){
+      console.error(error);
+    }
+  };
+
+  const checkEmail = async (_email) => {
+    try {
+      const { data:db_email } = await axios.get('http://localhost:4000/emails', _email);
+      if (_email === db_email){
+        setEmailExistonDb(true);
+      } else{
+        setEmailExistonDb(false);
+      }
     }
     catch(error){
       console.error(error);
@@ -27,19 +42,22 @@ const Register = () => {
 
   const emailHandler = (event) => {
     setEmail(event.target.value);
-    console.log(email);
+    event.preventDefault();
   };
 
   const usernameHandler = (event) => {
     setUsername(event.target.value);
+    event.preventDefault();
   };
 
   const passwordHandler = (event) => {
     setPassword(event.target.value);
+    event.preventDefault();
   };
 
   const passwordRepeatHandler = (event) => {
     setPasswordRepeat(event.target.value);
+    event.preventDefault();
   };
 
   const onSubmitHandler = (event) => {
@@ -63,11 +81,18 @@ const Register = () => {
     return false;
   };
 
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      checkEmail(email);
+      }, 1000);
+    return () => {clearTimeout(delay);}
+  }, [email]);
+
   return (
     <Container fluid='lg'>
       <Row>
-        <Col></Col>
-        <Col>
+        <Col md></Col>
+        <Col md>
           <Form onSubmit={onSubmitHandler}>
             <div className='mt-2 mb-2'><b>Enter your email, username, and password to register.</b></div>
             <Form.Group className='mb-2'>
@@ -113,7 +138,7 @@ const Register = () => {
           <Button type='submit'>Submit</Button>
           </Form>
         </Col>
-        <Col></Col>
+        <Col md></Col>
       </Row>
     </Container>
   );
