@@ -16,10 +16,11 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [passwordRepeat, setPasswordRepeat] = useState('');
   const [doesEmailExistonDb, setEmailExistonDb] = useState(false);
+  const [emailErrors, setEmailErrors] = useState([""]);
 
   useEffect(() => {
     const delay = setTimeout(() => {
-      checkEmail(email); }, 1000);
+      checkEmail(email); }, 2000);
     return () => {clearTimeout(delay);}
   }, [email]);
 
@@ -36,9 +37,8 @@ const Register = () => {
     try {
       const {data, ...rest} = await axios.post('http://localhost:4000/email', {'email':_email});
       console.log(data);
-      const db_email = "";
-      if (_email === db_email){
-        setEmailExistonDb(true);
+      if (data === true){
+
       } else{
         setEmailExistonDb(false);
       }
@@ -106,6 +106,7 @@ const Register = () => {
                 value = {email}
               >
             </Form.Control>
+            {doesEmailExistonDb && <div className='warning'>This email is unavailable. Please use another email. </div>}
             </Form.Group>
             <Form.Group className='mb-2'>
               <Form.Label>Username: </Form.Label>
