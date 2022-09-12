@@ -17,6 +17,12 @@ const Register = () => {
   const [passwordRepeat, setPasswordRepeat] = useState('');
   const [doesEmailExistonDb, setEmailExistonDb] = useState(false);
 
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      checkEmail(email); }, 1000);
+    return () => {clearTimeout(delay);}
+  }, [email]);
+
   const postLoginInfo = async (_loginInfo) => {
     try{
       await axios.post('http://localhost:4000/register', _loginInfo);
@@ -28,7 +34,9 @@ const Register = () => {
 
   const checkEmail = async (_email) => {
     try {
-      const { data:db_email } = await axios.get('http://localhost:4000/emails', _email);
+      const {data, ...rest} = await axios.post('http://localhost:4000/email', {'email':_email});
+      console.log(data);
+      const db_email = "";
       if (_email === db_email){
         setEmailExistonDb(true);
       } else{
@@ -81,12 +89,6 @@ const Register = () => {
     return false;
   };
 
-  useEffect(() => {
-    const delay = setTimeout(() => {
-      checkEmail(email);
-      }, 1000);
-    return () => {clearTimeout(delay);}
-  }, [email]);
 
   return (
     <Container fluid='lg'>
