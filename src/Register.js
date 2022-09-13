@@ -15,33 +15,32 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordRepeat, setPasswordRepeat] = useState('');
-  const [doesEmailExistonDb, setEmailExistonDb] = useState(false);
-  const [emailErrors, setEmailErrors] = useState([""]);
+  const [doesEmailExistsonDb, setEmailExistenceOnDb] = useState(false);
 
   useEffect(() => {
+    const checkEmail = async (_email_) => {
+      try {
+        const {data, ...rest} = await axios.post('http://localhost:4000/email', {'email':_email_});
+        console.log(data);
+        if (data){
+          setEmailExistenceOnDb(data);
+        } else{
+          setEmailExistenceOnDb(data);
+        }
+      }
+      catch(error){
+        console.error(error);
+      }
+    };
+
     const delay = setTimeout(() => {
       checkEmail(email); }, 2000);
     return () => {clearTimeout(delay);}
-  }, [email]);
+  }, [email, setEmailExistenceOnDb]);
 
   const postLoginInfo = async (_loginInfo) => {
     try{
       await axios.post('http://localhost:4000/register', _loginInfo);
-    }
-    catch(error){
-      console.error(error);
-    }
-  };
-
-  const checkEmail = async (_email) => {
-    try {
-      const {data, ...rest} = await axios.post('http://localhost:4000/email', {'email':_email});
-      console.log(data);
-      if (data === true){
-
-      } else{
-        setEmailExistonDb(false);
-      }
     }
     catch(error){
       console.error(error);
@@ -89,7 +88,6 @@ const Register = () => {
     return false;
   };
 
-
   return (
     <Container fluid='lg'>
       <Row>
@@ -106,7 +104,7 @@ const Register = () => {
                 value = {email}
               >
             </Form.Control>
-            {doesEmailExistonDb && <div className='warning'>This email is unavailable. Please use another email. </div>}
+            {/**doesEmailExistonDb && <div className='warning'>This email is unavailable. Please use another email. </div>**/}
             </Form.Group>
             <Form.Group className='mb-2'>
               <Form.Label>Username: </Form.Label>
