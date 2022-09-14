@@ -1,1 +1,8 @@
-.warning{color:red;}
+.warning{
+  color:red;
+  padding-top: 0.5em;
+}
+.go{
+  color:green;
+  padding-top: 0.5em;
+}

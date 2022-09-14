@@ -15,17 +15,26 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordRepeat, setPasswordRepeat] = useState('');
+  const [isEmailValid, setEmailValidity] = useState(false);
   const [doesEmailExistsonDb, setEmailExistenceOnDb] = useState(false);
+  const [isUsernameValid, setUsernameValidity] = useState(false);
+  const [doesUsernameExistsonDb, setUsernameExistenceOnDb] = useState(false);
+  const {areFieldsValid, setFieldValidiy} = useState(false);
 
   useEffect(() => {
     const checkEmail = async (_email_) => {
       try {
-        const {data, ...rest} = await axios.post('http://localhost:4000/email', {'email':_email_});
-        console.log(data);
-        if (data){
-          setEmailExistenceOnDb(data);
-        } else{
-          setEmailExistenceOnDb(data);
+        if (validator.isEmail(_email_)){
+          setEmailValidity(true);
+          const { data } = await axios.post('http://localhost:4000/email', {'email':_email_});
+          console.log(data);
+          if (data){
+            setEmailExistenceOnDb(true);
+          } else{
+            setEmailExistenceOnDb(false);
+          }
+        } else {
+          setEmailValidity(false);
         }
       }
       catch(error){
@@ -34,9 +43,35 @@ const Register = () => {
     };
 
     const delay = setTimeout(() => {
-      checkEmail(email); }, 2000);
+      checkEmail(email); }, 1500);
     return () => {clearTimeout(delay);}
-  }, [email, setEmailExistenceOnDb]);
+  }, [email, setEmailValidity, setEmailExistenceOnDb]);
+
+  useEffect(() => {
+    const checkUsername = async (_username_) => {
+      try {
+        if (validator.isAlphanumeric(_username_)){
+          setUsernameValidity(true);
+          const { data } = await axios.post('http://localhost:4000/username', {'username':_username_});
+          console.log(data);
+          if (data){
+            setUsernameExistenceOnDb(data);
+          } else{
+            setUsernameExistenceOnDb(data);
+          }
+        } else {
+          setUsernameValidity(false);
+        }
+      }
+      catch(error){
+        console.error(error);
+      }
+    };
+
+    const delay = setTimeout(() => {
+      checkUsername(username); }, 1500);
+    return () => {clearTimeout(delay);}
+  }, [username, setUsernameValidity, setUsernameExistenceOnDb]);
 
   const postLoginInfo = async (_loginInfo) => {
     try{
@@ -92,11 +127,11 @@ const Register = () => {
     <Container fluid='lg'>
       <Row>
         <Col md></Col>
-        <Col md>
+        <Col sm md>
           <Form onSubmit={onSubmitHandler}>
             <div className='mt-2 mb-2'><b>Enter your email, username, and password to register.</b></div>
             <Form.Group className='mb-2'>
-              <Form.Label> Email: </Form.Label>
+              <Form.Label> Email*: </Form.Label>
               <Form.Control
                 type='email'
                 placeholder='email'
@@ -104,10 +139,12 @@ const Register = () => {
                 value = {email}
               >
             </Form.Control>
-            {/**doesEmailExistonDb && <div className='warning'>This email is unavailable. Please use another email. </div>**/}
+            {isEmailValid === false && email.length > 5 && <div className='warning'> This is not a valid email. </div> }
+            {doesEmailExistsonDb && <div className='warning'>The email has been registered. </div>}
+            {doesEmailExistsonDb === false && isEmailValid && <div className='go'>The email is valid. </div>}
             </Form.Group>
             <Form.Group className='mb-2'>
-              <Form.Label>Username: </Form.Label>
+              <Form.Label>Username*: </Form.Label>
               <Form.Control
                 type='username'
                 placeholder='username'
@@ -117,7 +154,7 @@ const Register = () => {
             </Form.Control>
             </Form.Group>
             <Form.Group className='mb-2'>
-              <Form.Label> Password: </Form.Label>
+              <Form.Label> Password*: </Form.Label>
               <Form.Control
                 type='password'
                 placeholder='Password'
@@ -126,7 +163,7 @@ const Register = () => {
               ></Form.Control>
             </Form.Group>
             <Form.Group className='mb-2'>
-              <Form.Label> Repeat password: </Form.Label>
+              <Form.Label> Repeat password*: </Form.Label>
               <Form.Control
                 type='password'
                 placeholder='Repeat password'
@@ -135,11 +172,11 @@ const Register = () => {
               ></Form.Control>
               { (isPasswordRepeated() === false) && <div className='warning'>Your password do not match!</div> }
             </Form.Group>
-
+          <Form.Label>*) Required.</Form.Label><br/>
           <Button type='submit'>Submit</Button>
           </Form>
         </Col>
-        <Col md></Col>
+        <Col sm md></Col>
       </Row>
     </Container>
   );
