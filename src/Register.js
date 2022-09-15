@@ -22,7 +22,7 @@ const Register = () => {
   const [doesUsernameExistsonDb, setUsernameExistenceOnDb] = useState(false);
   const [isPasswordValid, setPasswordValidity] = useState(false);
   const [isPasswordRepeatValid, setPasswordRepeatValidity] = useState(false);
-  const [areFieldsValid, setFieldValidiy] = useState(false);
+  const [areFieldsValid, setFieldsValid] = useState(false);
 
   //fetch email
   useEffect(() => {
@@ -31,8 +31,8 @@ const Register = () => {
         if (validator.isEmail(_email_)){
           setEmailValidity(true);
           const { data } = await axios.post('http://localhost:4000/email', {'email':_email_});
-          console.log(data);
-          if (data){
+          console.log("Does "+ _email_ + " exist on database? " + data);
+          if (data == true){
             setEmailExistenceOnDb(true);
           } else{
             setEmailExistenceOnDb(false);
@@ -58,11 +58,11 @@ const Register = () => {
         if (validator.isAlphanumeric(_username_) && _username_.length > 3){
           setUsernameValidity(true);
           const { data } = await axios.post('http://localhost:4000/username', {'username':_username_});
-          console.log(data);
-          if (data){
-            setUsernameExistenceOnDb(data);
+          console.log("Does " + _username_ +" exist on database? " + data);
+          if (data === true){
+            setUsernameExistenceOnDb(true);
           } else{
-            setUsernameExistenceOnDb(data);
+            setUsernameExistenceOnDb(false);
           }
         } else {
           setUsernameValidity(false);
@@ -119,7 +119,11 @@ const Register = () => {
   };
 
   const onSubmitHandler = (event) => {
-    if (isPasswordRepeated()){
+    areRegistrationFieldsValid();
+    if(email === '' || username === '' || password === '' || passwordRepeat === ''){
+      alert('Please fill all of the fields before submitting.');
+      event.preventDefault();
+    } else if (areFieldsValid === true){
       const loginInfo = {"email":email, "username":username, "password":password};
       postLoginInfo(loginInfo);
       setEmail('');
@@ -127,8 +131,8 @@ const Register = () => {
       setPassword('');
       setPasswordRepeat('');
       event.preventDefault();
-    } else {
-      alert("Please fix the errors before submitting.");
+    } else if (areFieldsValid === false){
+      alert("Please conform to the warnings and errors before submitting.");
       event.preventDefault();
     }
   };
@@ -137,6 +141,19 @@ const Register = () => {
     if (password === passwordRepeat)
       return true;
     return false;
+  };
+
+  const areRegistrationFieldsValid = () => {
+    if( isEmailValid &&
+        (doesEmailExistsonDb === false) &&
+        isUsernameValid &&
+        (doesUsernameExistsonDb === false) &&
+        isPasswordValid &&
+        isPasswordRepeatValid &&
+        isPasswordRepeated()
+    ) setFieldsValid(true);
+    else
+      setFieldsValid(false);
   };
 
   return (
