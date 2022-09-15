@@ -7,20 +7,24 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { useState, useEffect } from 'react';
 import validator from 'validator';
+import PasswordStrengthIndicator from 'react-password-strength-bar';
 
 const axios = require('axios');
 
 const Register = () => {
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [passwordRepeat, setPasswordRepeat] = useState('');
   const [isEmailValid, setEmailValidity] = useState(false);
   const [doesEmailExistsonDb, setEmailExistenceOnDb] = useState(false);
   const [isUsernameValid, setUsernameValidity] = useState(false);
   const [doesUsernameExistsonDb, setUsernameExistenceOnDb] = useState(false);
-  const {areFieldsValid, setFieldValidiy} = useState(false);
+  const [isPasswordValid, setPasswordValidity] = useState(false);
+  const [isPasswordRepeatValid, setPasswordRepeatValidity] = useState(false);
+  const [areFieldsValid, setFieldValidiy] = useState(false);
 
+  //fetch email
   useEffect(() => {
     const checkEmail = async (_email_) => {
       try {
@@ -47,10 +51,11 @@ const Register = () => {
     return () => {clearTimeout(delay);}
   }, [email, setEmailValidity, setEmailExistenceOnDb]);
 
+  //fetch username
   useEffect(() => {
     const checkUsername = async (_username_) => {
       try {
-        if (validator.isAlphanumeric(_username_)){
+        if (validator.isAlphanumeric(_username_) && _username_.length > 3){
           setUsernameValidity(true);
           const { data } = await axios.post('http://localhost:4000/username', {'username':_username_});
           console.log(data);
@@ -93,11 +98,22 @@ const Register = () => {
   };
 
   const passwordHandler = (event) => {
+    if (event.target.value.length > 6){
+      setPasswordValidity(true);
+    } else {
+      setPasswordValidity(false);
+    }
     setPassword(event.target.value);
     event.preventDefault();
   };
 
   const passwordRepeatHandler = (event) => {
+    if (event.target.value.length > 6){
+      setPasswordRepeatValidity(true);
+    } else {
+      setPasswordRepeatValidity(false);
+    }
+
     setPasswordRepeat(event.target.value);
     event.preventDefault();
   };
@@ -139,10 +155,10 @@ const Register = () => {
                 value = {email}
               >
             </Form.Control>
-            {isEmailValid === false && email.length > 5 && <div className='warning'> This is not a valid email. </div> }
-            {doesEmailExistsonDb && <div className='warning'>The email has been registered. </div>}
-            {doesEmailExistsonDb === false && isEmailValid && <div className='go'>The email is valid. </div>}
-            </Form.Group>
+            {isEmailValid === false && email !== '' && <div className='assist'>⚠️  Please use a real email. </div> }
+            {doesEmailExistsonDb && <div className='assist'>❌ This email has been registered. Please use another email. </div>}
+            {doesEmailExistsonDb === false && isEmailValid && <div className='go'>✔️ Email looks good. </div>}
+           </Form.Group>
             <Form.Group className='mb-2'>
               <Form.Label>Username*: </Form.Label>
               <Form.Control
@@ -151,8 +167,11 @@ const Register = () => {
                 onChange = {usernameHandler}
                 value = {username}
               >
-            </Form.Control>
-            </Form.Group>
+             </Form.Control>
+            {isUsernameValid === false && username.length <= 3 && username !== '' && <div className='assist'> ⚠️  Your username needs to be consisted of valid English alphabets and numbers. It also has to be more than 3 characters long. </div> }
+            {doesUsernameExistsonDb && <div className='assist'>❌: Unfortunately, the username had been taken. Please, choose another username. </div>}
+            {doesUsernameExistsonDb === false && isUsernameValid && <div className='go'>✔️ Username looks good. </div>}
+          </Form.Group>
             <Form.Group className='mb-2'>
               <Form.Label> Password*: </Form.Label>
               <Form.Control
@@ -161,6 +180,8 @@ const Register = () => {
                 onChange= {passwordHandler}
                 value = {password}
               ></Form.Control>
+              {password !== '' && <PasswordStrengthIndicator password={password}/>}
+              { isPasswordValid === false && password !=='' && <div className='assist'>⚠️ Password must be more than six characters. </div> }
             </Form.Group>
             <Form.Group className='mb-2'>
               <Form.Label> Repeat password*: </Form.Label>
@@ -170,9 +191,12 @@ const Register = () => {
                 onChange= {passwordRepeatHandler}
                 value = {passwordRepeat}
               ></Form.Control>
-              { (isPasswordRepeated() === false) && <div className='warning'>Your password do not match!</div> }
+              {passwordRepeat !== '' && <PasswordStrengthIndicator password={passwordRepeat} className='go'/>}
+              { isPasswordRepeatValid === false && passwordRepeat !== '' && <div className='assist'>⚠️ Password must be more than six characters. </div> }
+              { isPasswordRepeated() === false && passwordRepeat !== '' && <div className='assist'>⚠️  Passwords don't match. </div> }
+              { isPasswordRepeated() === true && passwordRepeat !=='' && <div className='go'>✔️ Passwords match!</div>}
             </Form.Group>
-          <Form.Label>*) Required.</Form.Label><br/>
+          <Form.Label><div>*) Required.</div></Form.Label><br/>
           <Button type='submit'>Submit</Button>
           </Form>
         </Col>

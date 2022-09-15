@@ -1,8 +1,10 @@
-.warning{
-  color:red;
+.assist{
+  font-size: .8em;
+  color:blue;
   padding-top: 0.5em;
 }
 .go{
+  font-size: .8em;
   color:green;
   padding-top: 0.5em;
 }
