@@ -20,9 +20,6 @@ const Register = () => {
   const [doesEmailExistsonDb, setEmailExistenceOnDb] = useState(false);
   const [isUsernameValid, setUsernameValidity] = useState(false);
   const [doesUsernameExistsonDb, setUsernameExistenceOnDb] = useState(false);
-  const [isPasswordValid, setPasswordValidity] = useState(false);
-  const [isPasswordRepeatValid, setPasswordRepeatValidity] = useState(false);
-  const [areFieldsValid, setFieldsValid] = useState(false);
 
   //fetch email
   useEffect(() => {
@@ -102,35 +99,32 @@ const Register = () => {
   const usernameHandler = (event) => {
     setUsername(event.target.value);
     event.preventDefault();
-    console.log('Username is ' + username);
-
-  };
+  }
 
   const passwordHandler = (event) => {
     setPassword(event.target.value);
-    if (event.target.value.length > 6) {
-      setPasswordValidity(true);
-    } else {
-      setPasswordValidity(false);
-    }
-    console.log("Password " + password +" length is " + password.length);
     event.preventDefault();
   };
 
   const passwordRepeatHandler = (event) => {
     setPasswordRepeat(event.target.value);
-    if (event.target.value.length > 6) {
-      setPasswordRepeatValidity(true);
-    } else {
-      setPasswordRepeatValidity(false);
-    }
-    console.log("Password repeat " + passwordRepeat +" length is " + passwordRepeat.length);
     event.preventDefault();
+  };
+
+  const isPasswordValid = () => {
+    if (password.length > 6)
+      return true;
+    return false;
+  };
+
+  const isPasswordRepeatValid = () => {
+    if (passwordRepeat.length > 6)
+      return true;
+    return false;
   };
 
   const onSubmitHandler = (event) => {
     const onSubmit = async () => {
-      areRegistrationFieldsValid();
       if (
         email === "" ||
         username === "" ||
@@ -139,7 +133,7 @@ const Register = () => {
       ) {
         alert("Please fill all of the fields before submitting.");
         event.preventDefault();
-      } else if (areFieldsValid === true) {
+      } else if (areRegistrationFieldsValid()){
         const loginInfo = {
           email: email,
           username: username,
@@ -151,17 +145,15 @@ const Register = () => {
         setUsername("");
         setUsernameValidity(false);
         setPassword("");
-        setPasswordValidity(false);
         setPasswordRepeat("");
-        setPasswordRepeatValidity(false);
         event.preventDefault();
-      } else if (areFieldsValid === false) {
+      } else if (areRegistrationFieldsValid() === false) {
         alert("Please conform to the warnings and errors before submitting.");
         event.preventDefault();
       }
     }
 
-    onSubmit(); //call onsubmit function
+    onSubmit(); //call onsubmit function which is an async function.
   };
 
   const isPasswordRepeated = () => {
@@ -175,12 +167,11 @@ const Register = () => {
       doesEmailExistsonDb === false &&
       isUsernameValid &&
       doesUsernameExistsonDb === false &&
-      isPasswordValid &&
-      isPasswordRepeatValid &&
+      isPasswordValid() &&
+      isPasswordRepeatValid() &&
       isPasswordRepeated()
-    )
-      setFieldsValid(true);
-    else setFieldsValid(false);
+    ) return true;
+    return false;
   };
 
   return (
@@ -250,10 +241,10 @@ const Register = () => {
                 onChange={passwordHandler}
                 value={password}
               ></Form.Control>
-              {isPasswordValid && (
+              {isPasswordValid() && (
                 <PasswordStrengthIndicator password={password} />
               )}
-              {isPasswordValid === false && password !== "" && (
+              {isPasswordValid() === false && password !== "" && (
                 <div className="assist">
                   ⚠️ Password must be more than six characters.
                 </div>
@@ -267,12 +258,12 @@ const Register = () => {
                 onChange={passwordRepeatHandler}
                 value={passwordRepeat}
               ></Form.Control>
-              {isPasswordRepeatValid && (
+              {isPasswordRepeatValid() && (
                 <PasswordStrengthIndicator
                   password={passwordRepeat}
                 />
               )}
-              {isPasswordRepeatValid === false && passwordRepeat !== "" && (
+              {isPasswordRepeatValid() === false && passwordRepeat !== "" && (
                 <div className="assist">
                   ⚠️ Password must be more than six characters.
                 </div>
@@ -280,7 +271,7 @@ const Register = () => {
               {isPasswordRepeated() === false && passwordRepeat !== "" && (
                 <div className="assist">⚠️ Passwords don't match. </div>
               )}
-              {isPasswordRepeatValid && isPasswordValid && isPasswordRepeated() === true && passwordRepeat !== "" && (
+              {isPasswordRepeatValid() && isPasswordValid() && isPasswordRepeated() === true && passwordRepeat !== "" && (
                 <div className="go">✔️ Passwords match!</div>
               )}
             </Form.Group>
