@@ -1,5 +1,6 @@
-import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import "./custom.css";
+import React from 'react';
+import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import "../css/custom.css";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
@@ -8,8 +9,9 @@ import Form from "react-bootstrap/Form";
 import { useState, useEffect } from "react";
 import validator from "validator";
 import PasswordStrengthIndicator from "react-password-strength-bar";
+import { api } from "../api";
+import Header from './Header';
 
-const axios = require("axios");
 const Register = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -30,7 +32,7 @@ const Register = () => {
       try {
         if (validator.isEmail(_email_)) {
           setEmailValidity(true);
-          const { data } = await axios.post("http://localhost:4000/email", {
+          const { data } = await api.post("/email", {
             email: _email_,
           });
           console.log("Does " + _email_ + " exist on database? " + data);
@@ -60,7 +62,7 @@ const Register = () => {
       try {
         if (validator.isAlphanumeric(_username_) && _username_.length > 3) {
           setUsernameValidity(true);
-          const { data } = await axios.post("http://localhost:4000/username", {
+          const { data } = await api.post("/username", {
             username: _username_,
           });
           console.log("Does " + _username_ + " exist on database? " + data);
@@ -87,10 +89,10 @@ const Register = () => {
 
   useEffect(() => {
     const delay = setTimeout(() => {
-      if (isEmailSent === true){
+      if (isEmailSent === true) {
         setVerifierCodeTimedout(true);
       }
-    }, 30000);
+    }, 300000);
 
     return () => {
       clearTimeout(delay);
@@ -135,7 +137,7 @@ const Register = () => {
   const onSubmitHandler = (event) => {
     const postLoginInfo = async (_loginInfo_) => {
       try {
-        await axios.post("http://localhost:4000/register", _loginInfo_);
+        await api.post("/register", _loginInfo_);
       } catch (error) {
         console.error(error);
       }
@@ -194,7 +196,7 @@ const Register = () => {
 
   const emailSubmitHandler = (event) => {
     const sendVerificationCodeEmail = async () => {
-      const { data } = await axios.post("http://localhost:4000/sendemail", {
+      const { data } = await api.post("/sendemail", {
         email: email,
       });
 
@@ -214,8 +216,11 @@ const Register = () => {
 
   const submitVerifierCode = (event) => {
     const checkVerifierCode = async () => {
-      if (validator.isAlphanumeric(verifier) && hasVerifierCodeTimedout === false) {
-        const { data } = await axios.post("http://localhost:4000/verifier", {
+      if (
+        validator.isAlphanumeric(verifier) &&
+        hasVerifierCodeTimedout === false
+      ) {
+        const { data } = await api.post("/verifier", {
           email: email,
           code: verifier,
         });
@@ -236,11 +241,10 @@ const Register = () => {
       <Row>
         <Col md></Col>
         <Col sm md>
+          <Header />
           {isEmailSent === false && (
             <Form onSubmit={emailSubmitHandler}>
-              <p className="mt-2">
-                <strong>Registering to industrialisasi. </strong>
-              </p>
+              <h5 className="mt-2">Industrialisasi registration. </h5>
               <div className="mb-2">
                 <strong>Please enter your email. </strong>
               </div>
@@ -253,15 +257,15 @@ const Register = () => {
                   value={email}
                 ></Form.Control>
                 {isEmailValid === false && email !== "" && (
-                  <div className="assist">⚠️ Please use a real email. </div>
+                  <div className="assist"><span role="img" aria-label="warning">⚠️ </span>Please use a real email. </div>
                 )}
                 {doesEmailExistsonDb && (
                   <div className="assist">
-                    ❌ This email has been registered. Please use another email.
+                    <span role="img" aria-label="error">❌</span> This email has been registered. Please use another email.
                   </div>
                 )}
                 {doesEmailExistsonDb === false && isEmailValid && (
-                  <div className="go">✔️ Email looks good. </div>
+                  <div className="go"><span role="img" aria-label="correct">✔️ </span>Email looks good. </div>
                 )}
                 <Button type="submit" className="mt-2">
                   Submit Email
@@ -272,12 +276,12 @@ const Register = () => {
           {isEmailSent === true && isVerifierCodeValid === false && (
             <Form onSubmit={submitVerifierCode}>
               <p className="mt-2">
-                <strong>Registering to industrialisasi. </strong>
+                <h5>Industrialisasi registration. </h5>
               </p>
               <div className="mb-2">
                 <strong>
                   Please check <span className="go">{email}'s </span> inbox/spam
-                  folder, a six character code has been sent to your email. {" "}
+                  folder, a six character code has been sent to your email.{" "}
                 </strong>
               </div>
               <Form.Group className="mb-2">
@@ -292,27 +296,26 @@ const Register = () => {
                   verifier !== "" &&
                   verifier.length < 6 && (
                     <div className="assist">
-                      ⚠️ The Verifier code consists of six character of numbers and letters.{" "}
+                      <span role="img" aria-label="warning">⚠️ </span>The Verifier code consists of six character of numbers
+                      and letters.{" "}
                     </div>
                   )}
-                {
-                  hasVerifierCodeTimedout === true &&
+                {hasVerifierCodeTimedout === true && (
                   <div className="assist">
-                    ❌ Timeout. The code is no longer valid. Refresh the page to try again.
+                    <span role="img" aria-label="error">❌</span> Timeout. The code is no longer valid. Refresh the page to
+                    try again.
                   </div>
-                }
+                )}
 
                 <Button type="submit" className="mt-2">
                   Submit code
                 </Button>
               </Form.Group>
-           </Form>
+            </Form>
           )}
           {isVerifierCodeValid === true && (
             <Form onSubmit={onSubmitHandler}>
-              <p className="mt-2">
-                <strong>Registering to industrialisasi. </strong>
-              </p>
+              <h5 className="mt-2">Industrialisasi registration. </h5>
               <div className="mb-2">
                 <strong>Please enter your username and password. </strong>
               </div>
@@ -326,24 +329,24 @@ const Register = () => {
                 ></Form.Control>
                 {isUsernameValid === false && username !== "" && (
                   <div className="assist">
-                    ⚠️ Username has to be consisted of only alphabets and
+                    <span role="img" aria-label="warning">⚠️ </span> Username has to be consisted of only alphabets and
                     numbers.
                   </div>
                 )}
                 {username.length <= 3 && username !== "" && (
                   <div className="assist">
-                    ⚠️ Username has to be more than 3 characters long.
+                    <span role="img" aria-label="warning">⚠️ </span> Username has to be more than 3 characters long.
                   </div>
                 )}
 
                 {doesUsernameExistsonDb && (
                   <div className="assist">
-                    ❌: Unfortunately, the username had been taken. Please,
+                    <span role="img" aria-label="error"> ❌</span> Unfortunately, the username had been taken. Please,
                     choose another username.
                   </div>
                 )}
                 {doesUsernameExistsonDb === false && isUsernameValid && (
-                  <div className="go">✔️ Username looks good. </div>
+                  <div className="go"><span role="img" aria-label="correct">✔️</span> Username looks good. </div>
                 )}
               </Form.Group>
               <Form.Group className="mb-2">
@@ -359,7 +362,7 @@ const Register = () => {
                 )}
                 {isPasswordValid() === false && password !== "" && (
                   <div className="assist">
-                    ⚠️  Password must be more than six characters.
+                    <span role="img" aria-label="warning">⚠️ </span>Password must be more than six characters.
                   </div>
                 )}
               </Form.Group>
@@ -376,17 +379,17 @@ const Register = () => {
                 )}
                 {isPasswordRepeatValid() === false && passwordRepeat !== "" && (
                   <div className="assist">
-                    ⚠️ Password must be more than six characters.
+                    <span role="img" aria-label="warning">⚠️ </span> Password must be more than six characters.
                   </div>
                 )}
                 {isPasswordRepeated() === false && passwordRepeat !== "" && (
-                  <div className="assist">⚠️ Passwords don't match. </div>
+                  <div className="assist"><span role="img" aria-label="warning">⚠️ </span> Passwords don't match. </div>
                 )}
                 {isPasswordRepeatValid() &&
                   isPasswordValid() &&
                   isPasswordRepeated() === true &&
                   passwordRepeat !== "" && (
-                    <div className="go">✔️ Passwords match!</div>
+                    <div className="go"><span role="img" aria-label="correct">✔️ </span> Passwords match!</div>
                   )}
               </Form.Group>
               <Form.Label>

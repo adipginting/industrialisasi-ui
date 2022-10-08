@@ -1,7 +1,10 @@
-import Register from './Register';
+import React from 'react';
+import { Register } from './components';
 
 const App = () => (
-  <Register/>
+  <div>
+    <Register/>
+  </div>
 );
 
 export default App;
