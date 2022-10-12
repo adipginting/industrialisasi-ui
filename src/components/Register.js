@@ -244,9 +244,9 @@ const Register = () => {
           <Header />
           {isEmailSent === false && (
             <Form onSubmit={emailSubmitHandler}>
-              <h5 className="mt-2">Industrialisasi registration. </h5>
+              <p className="mt-2">Industrialisasi registration. </p>
               <div className="mb-2">
-                <strong>Please enter your email. </strong>
+                <p>Please enter your email. </p>
               </div>
               <Form.Group className="mb-2">
                 <Form.Label> Email: </Form.Label>
@@ -276,13 +276,13 @@ const Register = () => {
           {isEmailSent === true && isVerifierCodeValid === false && (
             <Form onSubmit={submitVerifierCode}>
               <p className="mt-2">
-                <h5>Industrialisasi registration. </h5>
+                <p>Industrialisasi registration. </p>
               </p>
               <div className="mb-2">
-                <strong>
+                <p>
                   Please check <span className="go">{email}'s </span> inbox/spam
                   folder, a six character code has been sent to your email.{" "}
-                </strong>
+                </p>
               </div>
               <Form.Group className="mb-2">
                 <Form.Label> Six character verifier code: </Form.Label>
@@ -315,9 +315,9 @@ const Register = () => {
           )}
           {isVerifierCodeValid === true && (
             <Form onSubmit={onSubmitHandler}>
-              <h5 className="mt-2">Industrialisasi registration. </h5>
+              <p className="mt-2">Industrialisasi registration. </p>
               <div className="mb-2">
-                <strong>Please enter your username and password. </strong>
+                <p>Please enter your username and password. </p>
               </div>
               <Form.Group className="mb-2">
                 <Form.Label>Username*: </Form.Label>

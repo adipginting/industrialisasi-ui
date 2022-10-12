@@ -18,6 +18,9 @@ const Header = () => (
         {" "}
         <Link to="/Login">Login</Link>{" "}
       </Nav.Link>
+      <Nav.Link>
+        <Link to="/About">About</Link>
+      </Nav.Link>
     </Nav>
   </Navbar>
 );
