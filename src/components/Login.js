@@ -40,7 +40,8 @@ const Login = () => {
   const onSubmitHandler = (event) => {
     const postLoginInfo = async (_loginInfo_) => {
       try {
-        await api.post("/login", _loginInfo_);
+        const { data } = await api.post("/login", _loginInfo_);
+        localStorage.setItem("jwthash", data);
       } catch (error) {
         console.error(error);
       }
@@ -87,7 +88,7 @@ const Login = () => {
         <Col md></Col>
         <Col sm md>
           <Header />
-            <Form onSubmit={onSubmitHandler}>
+            <Form onSubmit={onSubmitHandler} >
               <p className="mt-2">Industrialisasi Login. </p>
               <div className="mb-2">
                 <p>Please enter your username and password. </p>

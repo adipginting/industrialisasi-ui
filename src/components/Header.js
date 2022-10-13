@@ -7,20 +7,20 @@ const Header = () => (
     <Navbar.Brand><Link to="/"><span role="img" aria-label="factory">🏭</span></Link></Navbar.Brand>
 
     <Nav>
-      <Nav.Link>
+      <div className="nav-link">
         <Link to="/">Home</Link>
-      </Nav.Link>
-      <Nav.Link>
+      </div>
+      <div className="nav-link">
         {" "}
         <Link to="/Register">Register</Link>{" "}
-      </Nav.Link>
-      <Nav.Link>
+      </div>
+      <div className="nav-link">
         {" "}
         <Link to="/Login">Login</Link>{" "}
-      </Nav.Link>
-      <Nav.Link>
+      </div>
+      <div className="nav-link">
         <Link to="/About">About</Link>
-      </Nav.Link>
+      </div>
     </Nav>
   </Navbar>
 );
