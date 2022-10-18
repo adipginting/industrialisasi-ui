@@ -1,19 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Container, Col, Row, Button, Form } from "react-bootstrap";
+import validator from "validator";
+import Header from './Header';
+import { api } from "../api";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../css/custom.css";
-import Container from "react-bootstrap/Container";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import { useState } from "react";
-import validator from "validator";
-import { api } from "../api";
-import Header from './Header';
+
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [redirect, setRedirect] = useState(false);
+  const navigator = useNavigate();
+
+  useEffect(() => {
+    if(redirect === true)
+      navigator('/');
+  }, [redirect]);
 
   const usernameHandler = (event) => {
     setUsername(event.target.value);
@@ -37,11 +41,22 @@ const Login = () => {
     return false;
   };
 
+  const areLoginFieldsValid = () => {
+    if (
+      isUsernameValid() &&
+      isPasswordValid()
+    )
+      return true;
+    return false;
+  };
+
   const onSubmitHandler = (event) => {
     const postLoginInfo = async (_loginInfo_) => {
       try {
         const { data } = await api.post("/login", _loginInfo_);
-        localStorage.setItem("jwthash", data);
+        console.log('Login works');
+        localStorage.setItem("jwttoken", data);
+        console.log(localStorage.getItem("jwttoken"));
       } catch (error) {
         console.error(error);
       }
@@ -54,6 +69,9 @@ const Login = () => {
       ) {
         alert("Please fill all of the fields before submitting.");
         event.preventDefault();
+      } else if (areLoginFieldsValid() === false) {
+        alert("Password or Username is not valid.");
+        event.preventDefault();
       } else if (areLoginFieldsValid()) {
         const loginInfo = {
           username: username,
@@ -63,22 +81,11 @@ const Login = () => {
         setUsername("");
         setPassword("");
         event.preventDefault();
-      } else if (areLoginFieldsValid() === false) {
-        alert("Password or Username is not valid.");
-        event.preventDefault();
       }
     };
-
     onSubmit(); //call onsubmit function which is an async function.
-  };
-
-  const areLoginFieldsValid = () => {
-    if (
-      isUsernameValid() &&
-      isPasswordValid()
-    )
-      return true;
-    return false;
+    setRedirect(true);
+    event.preventDefault();
   };
 
 
@@ -88,31 +95,31 @@ const Login = () => {
         <Col md></Col>
         <Col sm md>
           <Header />
-            <Form onSubmit={onSubmitHandler} >
-              <p className="mt-2">Industrialisasi Login. </p>
-              <div className="mb-2">
-                <p>Please enter your username and password. </p>
-              </div>
-              <Form.Group className="mb-2">
-                <Form.Label>Username: </Form.Label>
-                <Form.Control
-                  type="username"
-                  placeholder="username"
-                  onChange={usernameHandler}
-                  value={username}
-                ></Form.Control>
-              </Form.Group>
-              <Form.Group className="mb-2">
-                <Form.Label> Password: </Form.Label>
-                <Form.Control
-                  type="password"
-                  placeholder="Password"
-                  onChange={passwordHandler}
-                  value={password}
-                ></Form.Control>
-              </Form.Group>
-              <Button type="submit">Login</Button>
-            </Form>
+          <Form onSubmit={onSubmitHandler} >
+            <p className="mt-2">Industrialisasi Login. </p>
+            <div className="mb-2">
+              <p>Please enter your username and password. </p>
+            </div>
+            <Form.Group className="mb-2">
+              <Form.Label>Username: </Form.Label>
+              <Form.Control
+                type="username"
+                placeholder="username"
+                onChange={usernameHandler}
+                value={username}
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group className="mb-2">
+              <Form.Label> Password: </Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Password"
+                onChange={passwordHandler}
+                value={password}
+              ></Form.Control>
+            </Form.Group>
+            <Button type="submit">Login</Button>
+          </Form>
         </Col>
         <Col sm md></Col>
       </Row>
