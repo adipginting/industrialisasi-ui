@@ -1,64 +1,55 @@
 import React, {useState, useEffect} from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Navbar, Nav } from "react-bootstrap";
-import { api } from '../api';
 
-const Header = () =>
+const Header = ({user, recentlyLoggedIn}) =>
 {
-  const [loggedUser, setLoggedUser ] = useState('no');
-  const [LoggedOut, setLoggedOut] = useState(false);
-  const navigator = useNavigate();
-  useEffect(
-    () => {
-      const checkJWTToken = async () => {
-        const response =  await api.get("/jwtvalidation");
-        console.log(response.data);
-        if (response.data === 'no'){
-          setLoggedUser(response.data);
-          setLoggedOut(true);
-        } else {
-          setLoggedUser(response.data);
-          setLoggedOut(false);
-        }
-      }
-    checkJWTToken();
-    }, [setLoggedUser, setLoggedOut]
-  );
+
+  const [loggedInUser, setLoggedInUser ] = useState(user);
+  const [justLoggedOut, setJustLoggedOut] = useState(false);
+
+  useEffect(() => {setLoggedInUser(user)}, [user]); // this is required to use a prop value as an initial value to a state hook
+
+  useEffect(() => {
+    if(recentlyLoggedIn == true)
+      window.location.reload();
+  }, [recentlyLoggedIn])
 
   useEffect(()=>{
-    if (LoggedOut === true)
-      navigator('/login');
-    //else ()
-  },[loggedUser, LoggedOut]);
+    if (justLoggedOut === true)
+      window.location.reload();
+  },[justLoggedOut]);
 
   const logout = (event) => {
-    setLoggedUser('no');
-    setLoggedOut(true);
+    setLoggedInUser('no');
+    setJustLoggedOut(true);
     localStorage.setItem("jwttoken", "loggedout");
     event.preventDefault();
   };
 
   return(
     <Navbar>
+    {console.log('user is: ' + loggedInUser)}
       <Navbar.Brand><Link to="/"><span role="img" aria-label="factory">🏭</span></Link></Navbar.Brand>
-      <Nav>
-        <div className="nav-link">
-          <Link to="/">Home</Link>
-        </div>
-      { loggedUser ==='no' &&
-        <div className="nav-link">
-          <Link to="/Register">Register</Link>
-        </div>
+      {(loggedInUser === 'no' || loggedInUser === "" || loggedInUser === undefined) &&
+        <Nav>
+          <div className="nav-link">
+            <Link to="/">Home</Link>
+          </div>
+          <div className="nav-link">
+            <Link to="/register">Register</Link>
+          </div>
+          <div className="nav-link">
+            <Link to="/login">Login</Link>
+          </div>
+        </Nav>
       }
-      { loggedUser === 'no' &&
-        <div className="nav-link">
-          <Link to="/login">Login</Link>
-        </div>
+      { loggedInUser !== 'no' && loggedInUser !== "" && loggedInUser !== undefined &&
+        <Nav>
+          {console.log('Konsole log value inside logout is' + loggedInUser)}
+          <div className="nav-link" onClick={logout}>Logout {loggedInUser}</div>
+        </Nav>
       }
-      { loggedUser !== 'no' &&
-        <div className="nav-link" onClick={logout}>Logout {loggedUser}</div>
-      }
-      </Nav>
     </Navbar>
 )};
 

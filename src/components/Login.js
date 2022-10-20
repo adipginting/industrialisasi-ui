@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Col, Row, Button, Form } from "react-bootstrap";
 import validator from "validator";
 import Header from './Header';
-import { api } from "../api";
+import { api, getJwt } from "../api";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../css/custom.css";
 
@@ -11,13 +11,29 @@ import "../css/custom.css";
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [redirect, setRedirect] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState('');
+  const [justLoggedIn, setJustLoggedIn] = useState(false);
   const navigator = useNavigate();
 
   useEffect(() => {
-    if(redirect === true)
+    const checkIfLoggedIn = async () => {
+      console.log('JwT result is ' + await getJwt())
+      if(await getJwt() !== 'no'){
+        setLoggedInUser(await getJwt());
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+        setLoggedInUser('no');
+      }
+    };
+    checkIfLoggedIn();
+  }, [setIsLoggedIn, setLoggedInUser]);
+
+  useEffect(() => {
+    if(isLoggedIn === true)
       navigator('/');
-  }, [redirect]);
+  }, [isLoggedIn]);
 
   const usernameHandler = (event) => {
     setUsername(event.target.value);
@@ -80,12 +96,13 @@ const Login = () => {
         await postLoginInfo(loginInfo);
         setUsername("");
         setPassword("");
+        setJustLoggedIn(true);
         event.preventDefault();
       }
     };
     onSubmit(); //call onsubmit function which is an async function.
-    setRedirect(true);
     event.preventDefault();
+
   };
 
 
@@ -94,7 +111,7 @@ const Login = () => {
       <Row>
         <Col md></Col>
         <Col sm md>
-          <Header />
+          <Header user={loggedInUser} recentlyLoggedIn={justLoggedIn}/>
           <Form onSubmit={onSubmitHandler} >
             <p className="mt-2">Industrialisasi Login. </p>
             <div className="mb-2">

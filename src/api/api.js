@@ -17,7 +17,7 @@ const api = axios.create({
     'Content-Type': 'application/json',
     'Authorization': auth(),
   }
-}, console.log(auth()));
+});
 
 export default api;
 
