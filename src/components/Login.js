@@ -18,7 +18,6 @@ const Login = () => {
 
   useEffect(() => {
     const checkIfLoggedIn = async () => {
-      console.log('JwT result is ' + await getJwt())
       if(await getJwt() !== 'no'){
         setLoggedInUser(await getJwt());
         setIsLoggedIn(true);
@@ -70,9 +69,7 @@ const Login = () => {
     const postLoginInfo = async (_loginInfo_) => {
       try {
         const { data } = await api.post("/login", _loginInfo_);
-        console.log('Login works');
         localStorage.setItem("jwttoken", data);
-        console.log(localStorage.getItem("jwttoken"));
       } catch (error) {
         console.error(error);
       }
@@ -109,7 +106,6 @@ const Login = () => {
   return (
     <Container fluid="lg">
       <Row>
-        <Col md></Col>
         <Col sm md>
           <Header user={loggedInUser} recentlyLoggedIn={justLoggedIn}/>
           <Form onSubmit={onSubmitHandler} >

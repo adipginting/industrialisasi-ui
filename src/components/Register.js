@@ -9,7 +9,8 @@ import Form from "react-bootstrap/Form";
 import { useState, useEffect } from "react";
 import validator from "validator";
 import PasswordStrengthIndicator from "react-password-strength-bar";
-import { api } from "../api";
+import { api, getJwt } from "../api";
+import { useNavigate } from 'react-router-dom';
 import Header from './Header';
 
 const Register = () => {
@@ -26,6 +27,29 @@ const Register = () => {
   const [isUsernameValid, setUsernameValidity] = useState(false);
   const [doesUsernameExistsonDb, setUsernameExistenceOnDb] = useState(false);
 
+  //if already logged in, redirect
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState('');
+  const navigator = useNavigate();
+
+  useEffect(() => {
+    const checkIfLoggedIn = async () => {
+      if(await getJwt() !== 'no'){
+        setLoggedInUser(await getJwt());
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+        setLoggedInUser('no');
+      }
+    };
+    checkIfLoggedIn();
+  }, [setIsLoggedIn, setLoggedInUser]);
+
+  useEffect(() => {
+    if(isLoggedIn === true)
+      navigator('/');
+  }, [isLoggedIn]);
+
   //fetch email
   useEffect(() => {
     const checkEmail = async (_email_) => {
@@ -35,7 +59,6 @@ const Register = () => {
           const { data } = await api.post("/email", {
             email: _email_,
           });
-          console.log("Does " + _email_ + " exist on database? " + data);
           if (data === true) {
             setEmailExistenceOnDb(true);
           } else {
@@ -65,7 +88,6 @@ const Register = () => {
           const { data } = await api.post("/username", {
             username: _username_,
           });
-          console.log("Does " + _username_ + " exist on database? " + data);
           if (data === true) {
             setUsernameExistenceOnDb(true);
           } else {
@@ -200,8 +222,6 @@ const Register = () => {
         email: email,
       });
 
-      console.log("Was email send? " + data);
-
       if (isEmailValid && doesEmailExistsonDb === false) {
         if (data === true) {
           setEmailSent(true);
@@ -224,7 +244,6 @@ const Register = () => {
           email: email,
           code: verifier,
         });
-        console.log("Is verifier valid? " + data);
         if (data === true) {
           setVerifierCodeValidy(true);
         } else {
@@ -239,9 +258,8 @@ const Register = () => {
   return (
     <Container fluid="lg">
       <Row>
-        <Col md></Col>
         <Col sm md>
-          <Header />
+          <Header user={loggedInUser} recentlyLoggedIn={false}  />
           {isEmailSent === false && (
             <Form onSubmit={emailSubmitHandler}>
               <p className="mt-2">Industrialisasi registration. </p>

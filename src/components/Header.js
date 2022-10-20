@@ -7,13 +7,15 @@ const Header = ({user, recentlyLoggedIn}) =>
 
   const [loggedInUser, setLoggedInUser ] = useState(user);
   const [justLoggedOut, setJustLoggedOut] = useState(false);
+  const [justLoggedIn, setJustLoggedIn] = useState(recentlyLoggedIn);
 
   useEffect(() => {setLoggedInUser(user)}, [user]); // this is required to use a prop value as an initial value to a state hook
+  useEffect(() => {setJustLoggedIn(recentlyLoggedIn)}, [recentlyLoggedIn])
 
   useEffect(() => {
-    if(recentlyLoggedIn == true)
+    if(justLoggedIn === true)
       window.location.reload();
-  }, [recentlyLoggedIn])
+  }, [justLoggedIn])
 
   useEffect(()=>{
     if (justLoggedOut === true)
@@ -29,7 +31,6 @@ const Header = ({user, recentlyLoggedIn}) =>
 
   return(
     <Navbar>
-    {console.log('user is: ' + loggedInUser)}
       <Navbar.Brand><Link to="/"><span role="img" aria-label="factory">🏭</span></Link></Navbar.Brand>
       {(loggedInUser === 'no' || loggedInUser === "" || loggedInUser === undefined) &&
         <Nav>
@@ -46,7 +47,6 @@ const Header = ({user, recentlyLoggedIn}) =>
       }
       { loggedInUser !== 'no' && loggedInUser !== "" && loggedInUser !== undefined &&
         <Nav>
-          {console.log('Konsole log value inside logout is' + loggedInUser)}
           <div className="nav-link" onClick={logout}>Logout {loggedInUser}</div>
         </Nav>
       }
