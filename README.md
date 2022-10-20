@@ -6,7 +6,7 @@ This is mainly a personal project. The initial purpose was initially to learn Re
     npm install
     npm start
     
-To do and progres:
+## To do and progres:
 - [x] It displays a three navigation menus on header.
 - [x] On register page, it does character contraints on email, username, and passwords.
 - [x] It can send verification email to users.
@@ -17,3 +17,4 @@ To do and progres:
 - [ ] Users can write posts.
 - [ ] Users can write comments.
 - [ ] Reply comments in one level thread.
+- [ ] Improve styling.
