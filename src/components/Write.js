@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Col, Row, Button, Form } from "react-bootstrap";
-import validator from "validator";
 import Header from './Header';
 import { api, getJwt } from "../api";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
@@ -10,10 +9,11 @@ import "../css/custom.css";
 
 const Login = () => {
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [title, setTitle ] = useState("");
+  const [content, setContent] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState('');
-  const [justLoggedIn, setJustLoggedIn] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,30 +30,13 @@ const Login = () => {
   }, [setIsLoggedIn, setLoggedInUser]);
 
   useEffect(() => {
-    if(isLoggedIn === true)
-      navigate('/');
+    if(isLoggedIn === false)
+      navigate('/login');
   }, [isLoggedIn, navigate]);
 
-  const usernameHandler = (event) => {
-    setUsername(event.target.value);
+  const titleHandler = (event) => {
+    setTitle(event.target.value);
     event.preventDefault();
-  };
-
-  const passwordHandler = (event) => {
-    setPassword(event.target.value);
-    event.preventDefault();
-  };
-
-  const isUsernameValid = () => {
-    if (validator.isAlphanumeric(username)){
-      return true;
-    }
-    return false;
-  };
-
-  const isPasswordValid = () => {
-    if (password.length > 6) return true;
-    return false;
   };
 
   const areLoginFieldsValid = () => {
@@ -66,34 +49,21 @@ const Login = () => {
   };
 
   const onSubmitHandler = (event) => {
-    const postLoginInfo = async (_loginInfo_) => {
+    const postLoginInfo = async () => {
       try {
-        const { data } = await api.post("/login", _loginInfo_);
-        localStorage.setItem("jwttoken", data);
+        const { data } = await api.post("/post", post);
       } catch (error) {
         console.error(error);
       }
     };
 
     const onSubmit = async () => {
-      if (
-        username === "" ||
-        password === ""
-      ) {
-        alert("Please fill all of the fields before submitting.");
-        event.preventDefault();
-      } else if (areLoginFieldsValid() === false) {
-        alert("Password or Username is not valid.");
-        event.preventDefault();
-      } else if (areLoginFieldsValid()) {
+      if (areLoginFieldsValid()) {
         const loginInfo = {
           username: username,
           password: password,
         };
         await postLoginInfo(loginInfo);
-        setUsername("");
-        setPassword("");
-        setJustLoggedIn(true);
         event.preventDefault();
       }
     };
@@ -108,7 +78,7 @@ const Login = () => {
       <Row>
         <Col md={2}></Col>
         <Col md={4}>
-          <Header user={loggedInUser} recentlyLoggedIn={justLoggedIn}/>
+          <Header user={loggedInUser}/>
           <Form onSubmit={onSubmitHandler} >
             <p className="mt-2">Industrialisasi Login. </p>
             <div className="mb-2">

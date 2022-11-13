@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import Header from "./Header";
 import { api, getJwt } from "../api";
 
@@ -13,7 +13,7 @@ const Post = ({ title, author, postedAt, lastEditAt, post }) => {
       <h1>{title}</h1>
       <p>
         An article by {author} on {jsDate(postedAt)}{" "}
-        {lastEditAt !== null && <span>{jsDate(lastEditAt)}</span>}
+        {lastEditAt !== null && <span>(last edit on {jsDate(lastEditAt)})</span>}
       </p>
       <div>{post}</div>
     </div>
@@ -46,6 +46,11 @@ const Home = () => {
     getPosts();
   }, [noPosts]);
 
+  const morePosts = (event) => {
+    setNoPosts(noPosts + 5);
+    event.preventDefault();
+  };
+
   return (
     <div>
       <Container fluid="lg">
@@ -56,7 +61,7 @@ const Home = () => {
             {posts.map((post) => {
               return (
                 <Post
-                  key={post.id}
+                  key={post.post_id}
                   title={post.title}
                   author={post.username}
                   postedAt={post.posted_at}
@@ -65,6 +70,10 @@ const Home = () => {
                 />
               );
             })}
+          {
+            ( posts.length >= noPosts) &&
+            <Button onClick={morePosts} className="mt-4">Load more posts </Button>
+          }
           </Col>
           <Col md></Col>
         </Row>
