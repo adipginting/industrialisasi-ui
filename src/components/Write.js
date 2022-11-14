@@ -8,7 +8,6 @@ import "../css/custom.css";
 
 
 const Login = () => {
-  const [username, setUsername] = useState("");
   const [title, setTitle ] = useState("");
   const [content, setContent] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -30,8 +29,8 @@ const Login = () => {
   }, [setIsLoggedIn, setLoggedInUser]);
 
   useEffect(() => {
-    if(isLoggedIn === false)
-      navigate('/login');
+//    if(isLoggedIn === true)
+   //   navigate('/login');
   }, [isLoggedIn, navigate]);
 
   const titleHandler = (event) => {
@@ -39,70 +38,55 @@ const Login = () => {
     event.preventDefault();
   };
 
-  const areLoginFieldsValid = () => {
-    if (
-      isUsernameValid() &&
-      isPasswordValid()
-    )
-      return true;
-    return false;
+  const contentHandler = (event) => {
+    setContent(event.target.value);
+    event.preventDefault();
   };
 
   const onSubmitHandler = (event) => {
-    const postLoginInfo = async () => {
+    const postThePost = async () => {
       try {
-        const { data } = await api.post("/post", post);
+        const thePost = {'title':title, 'content': content};
+        const { data } = await api.post("/post", thePost);
+        console.log(data);
       } catch (error) {
         console.error(error);
       }
     };
 
-    const onSubmit = async () => {
-      if (areLoginFieldsValid()) {
-        const loginInfo = {
-          username: username,
-          password: password,
-        };
-        await postLoginInfo(loginInfo);
-        event.preventDefault();
-      }
-    };
-    onSubmit(); //call onsubmit function which is an async function.
+    postThePost();
     event.preventDefault();
 
   };
 
-
   return (
     <Container fluid="lg">
       <Row>
-        <Col md={2}></Col>
-        <Col md={4}>
-          <Header user={loggedInUser}/>
+        <Col></Col>
+        <Col md={8}>
+          <Header user={loggedInUser} isWriting={true} />
           <Form onSubmit={onSubmitHandler} >
-            <p className="mt-2">Industrialisasi Login. </p>
-            <div className="mb-2">
-              <p>Please enter your username and password. </p>
-            </div>
+            <p className="mt-2">Write new post. </p>
             <Form.Group className="mb-2">
-              <Form.Label>Username: </Form.Label>
+              <Form.Label>Post title </Form.Label>
               <Form.Control
-                type="username"
-                placeholder="username"
-                onChange={usernameHandler}
-                value={username}
+                type="text"
+                placeholder="title"
+                onChange={titleHandler}
+                value={title}
               ></Form.Control>
             </Form.Group>
             <Form.Group className="mb-2">
-              <Form.Label> Password: </Form.Label>
+              <Form.Label> Post content: </Form.Label>
               <Form.Control
-                type="password"
-                placeholder="Password"
-                onChange={passwordHandler}
-                value={password}
+                as="textarea"
+                rows={12}
+                placeholder="start typing content"
+                onChange={contentHandler}
+                value={content}
               ></Form.Control>
             </Form.Group>
-            <Button type="submit">Login</Button>
+            <Button type="submit">Publish post</Button>
           </Form>
         </Col>
         <Col md></Col>

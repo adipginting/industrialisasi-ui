@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { Register, Login, About, Home } from './components';
+import { Register, Login, About, Home, Write } from './components';
 
  const router = createBrowserRouter([
     {
@@ -19,9 +19,12 @@ import { Register, Login, About, Home } from './components';
     {
       path: '/about',
       element: <About />
-    }
+    },
+   {
+      path:'/write',
+      element: <Write />
+   }
   ]);
-
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
