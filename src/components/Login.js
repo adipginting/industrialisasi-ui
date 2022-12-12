@@ -14,7 +14,7 @@ const Login = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState('');
   const [justLoggedIn, setJustLoggedIn] = useState(false);
-  const navigator = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkIfLoggedIn = async () => {
@@ -31,8 +31,8 @@ const Login = () => {
 
   useEffect(() => {
     if(isLoggedIn === true)
-      navigator('/');
-  }, [isLoggedIn]);
+      navigate('/');
+  }, [isLoggedIn, navigate]);
 
   const usernameHandler = (event) => {
     setUsername(event.target.value);
@@ -106,7 +106,8 @@ const Login = () => {
   return (
     <Container fluid="lg">
       <Row>
-        <Col sm md>
+        <Col md={2}></Col>
+        <Col md={4}>
           <Header user={loggedInUser} recentlyLoggedIn={justLoggedIn}/>
           <Form onSubmit={onSubmitHandler} >
             <p className="mt-2">Industrialisasi Login. </p>
@@ -134,7 +135,7 @@ const Login = () => {
             <Button type="submit">Login</Button>
           </Form>
         </Col>
-        <Col sm md></Col>
+        <Col md></Col>
       </Row>
     </Container>
   );

@@ -258,7 +258,8 @@ const Register = () => {
   return (
     <Container fluid="lg">
       <Row>
-        <Col sm md>
+        <Col md={2}></Col>
+        <Col md={4}>
           <Header user={loggedInUser} recentlyLoggedIn={false}  />
           {isEmailSent === false && (
             <Form onSubmit={emailSubmitHandler}>
@@ -418,7 +419,7 @@ const Register = () => {
             </Form>
           )}
         </Col>
-        <Col sm md></Col>
+        <Col md></Col>
       </Row>
     </Container>
   );
