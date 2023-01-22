@@ -9,7 +9,7 @@ import Form from "react-bootstrap/Form";
 import { useState, useEffect } from "react";
 import validator from "validator";
 import PasswordStrengthIndicator from "react-password-strength-bar";
-import { api, getJwt } from "../api";
+import { api, getUsername } from "../api";
 import { useNavigate } from 'react-router-dom';
 import Header from './Header';
 
@@ -34,12 +34,12 @@ const Register = () => {
 
   useEffect(() => {
     const checkIfLoggedIn = async () => {
-      if(await getJwt() !== 'no'){
-        setLoggedInUser(await getJwt());
+      if(await getUsername() !== ''){
+        setLoggedInUser(await getUsername());
         setIsLoggedIn(true);
       } else {
         setIsLoggedIn(false);
-        setLoggedInUser('no');
+        setLoggedInUser('');
       }
     };
     checkIfLoggedIn();
@@ -48,7 +48,7 @@ const Register = () => {
   useEffect(() => {
     if(isLoggedIn === true)
       navigator('/');
-  }, [isLoggedIn]);
+  }, [isLoggedIn, navigator]);
 
   //fetch email
   useEffect(() => {

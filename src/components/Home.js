@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import Header from "./Header";
-import { api, getJwt } from "../api";
+import { api, getUsername } from "../api";
 
 const Post = ({ title, author, postedAt, lastEditAt, post }) => {
   const jsDate = (pgDate) => {
@@ -27,8 +27,8 @@ const Home = () => {
 
   useEffect(() => {
     const checkIfLoggedIn = async () => {
-      if ((await getJwt()) !== "no") {
-        setLoggedInUser(await getJwt());
+      if ((await getUsername()) !== "no") {
+        setLoggedInUser(await getUsername());
       } else {
         setLoggedInUser("no");
       }
@@ -39,8 +39,10 @@ const Home = () => {
   useEffect(() => {
     const getPosts = async () => {
       const { data } = await api.post("/posts", { no_posts: noPosts });
-      setPosts(data.rows);
-      console.log(data.rows);
+      if(typeof(data.rows) === 'undefined')
+        setPosts([]);
+      else
+        setPosts(data.rows);
     };
 
     getPosts();
@@ -61,12 +63,12 @@ const Home = () => {
             {posts.map((post) => {
               return (
                 <Post
-                  key={post.post_id}
-                  title={post.title}
-                  author={post.username}
-                  postedAt={post.posted_at}
-                  lastEditAt={post.last_edited_at}
-                  post={post.post}
+                  key={post.PostId}
+                  title={post.Title}
+                  author={post.Username}
+                  postedAt={post.PostedAt}
+                  lastEditAt={post.LastEditedAt}
+                  post={post.Post}
                 />
               );
             })}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Col, Row, Button, Form } from "react-bootstrap";
 import Header from './Header';
-import { api, getJwt } from "../api";
+import { api, getUsername } from "../api";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../css/custom.css";
 
@@ -17,12 +17,12 @@ const Login = () => {
 
   useEffect(() => {
     const checkIfLoggedIn = async () => {
-      if(await getJwt() !== 'no'){
-        setLoggedInUser(await getJwt());
+      if(await getUsername() !== ''){
+        setLoggedInUser(await getUsername());
         setIsLoggedIn(true);
       } else {
         setIsLoggedIn(false);
-        setLoggedInUser('no');
+        setLoggedInUser('');
       }
     };
     checkIfLoggedIn();
