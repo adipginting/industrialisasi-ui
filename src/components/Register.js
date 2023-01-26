@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../css/custom.css";
 import Container from "react-bootstrap/Container";
@@ -8,10 +8,10 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useState, useEffect } from "react";
 import validator from "validator";
-import PasswordStrengthIndicator from "react-password-strength-bar";
+import { passwordStrength } from "check-password-strength";
 import { api, getUsername } from "../api";
-import { useNavigate } from 'react-router-dom';
-import Header from './Header';
+import { useNavigate } from "react-router-dom";
+import Header from "./Header";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -29,25 +29,24 @@ const Register = () => {
 
   //if already logged in, redirect
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState('');
+  const [loggedInUser, setLoggedInUser] = useState("");
   const navigator = useNavigate();
 
   useEffect(() => {
     const checkIfLoggedIn = async () => {
-      if(await getUsername() !== ''){
+      if ((await getUsername()) !== "") {
         setLoggedInUser(await getUsername());
         setIsLoggedIn(true);
       } else {
         setIsLoggedIn(false);
-        setLoggedInUser('');
+        setLoggedInUser("");
       }
     };
     checkIfLoggedIn();
   }, [setIsLoggedIn, setLoggedInUser]);
 
   useEffect(() => {
-    if(isLoggedIn === true)
-      navigator('/');
+    if (isLoggedIn === true) navigator("/");
   }, [isLoggedIn, navigator]);
 
   //fetch email
@@ -176,7 +175,7 @@ const Register = () => {
         event.preventDefault();
       } else if (areRegistrationFieldsValid()) {
         const loginInfo = {
-          email: email,
+          "code": verifier,
           username: username,
           password: password,
         };
@@ -210,7 +209,9 @@ const Register = () => {
       doesUsernameExistsonDb === false &&
       isPasswordValid() &&
       isPasswordRepeatValid() &&
-      isPasswordRepeated()
+      isPasswordRepeated() &&
+      passwordStrength(password).id > 1 &&
+      passwordStrength(passwordRepeat).id > 1
     )
       return true;
     return false;
@@ -241,10 +242,9 @@ const Register = () => {
         hasVerifierCodeTimedout === false
       ) {
         const { data } = await api.post("/verifier", {
-          email: email,
           code: verifier,
         });
-        if (data === true) {
+        if (data === email) {
           setVerifierCodeValidy(true);
         } else {
           setVerifierCodeValidy(false);
@@ -260,7 +260,7 @@ const Register = () => {
       <Row>
         <Col md={2}></Col>
         <Col md={4}>
-          <Header user={loggedInUser} recentlyLoggedIn={false}  />
+          <Header user={loggedInUser} recentlyLoggedIn={false} />
           {isEmailSent === false && (
             <Form onSubmit={emailSubmitHandler}>
               <p className="mt-2">Industrialisasi registration. </p>
@@ -276,15 +276,28 @@ const Register = () => {
                   value={email}
                 ></Form.Control>
                 {isEmailValid === false && email !== "" && (
-                  <div className="assist"><span role="img" aria-label="warning">⚠️ </span>Please use a real email. </div>
+                  <div className="assist">
+                    <span role="img" aria-label="warning">
+                      ⚠️{" "}
+                    </span>
+                    Please use a real email.{" "}
+                  </div>
                 )}
                 {doesEmailExistsonDb && (
                   <div className="assist">
-                    <span role="img" aria-label="error">❌</span> This email has been registered. Please use another email.
+                    <span role="img" aria-label="error">
+                      ❌
+                    </span>{" "}
+                    This email has been registered. Please use another email.
                   </div>
                 )}
                 {doesEmailExistsonDb === false && isEmailValid && (
-                  <div className="go"><span role="img" aria-label="correct">✔️ </span>Email looks good. </div>
+                  <div className="go">
+                    <span role="img" aria-label="correct">
+                      ✔️{" "}
+                    </span>
+                    Email looks good.{" "}
+                  </div>
                 )}
                 <Button type="submit" className="mt-2">
                   Submit Email
@@ -315,13 +328,19 @@ const Register = () => {
                   verifier !== "" &&
                   verifier.length < 6 && (
                     <div className="assist">
-                      <span role="img" aria-label="warning">⚠️ </span>The Verifier code consists of six character of numbers
-                      and letters.{" "}
+                      <span role="img" aria-label="warning">
+                        ⚠️{" "}
+                      </span>
+                      The Verifier code consists of six character of numbers and
+                      letters.{" "}
                     </div>
                   )}
                 {hasVerifierCodeTimedout === true && (
                   <div className="assist">
-                    <span role="img" aria-label="error">❌</span> Timeout. The code is no longer valid. Refresh the page to
+                    <span role="img" aria-label="error">
+                      ❌
+                    </span>{" "}
+                    Timeout. The code is no longer valid. Refresh the page to
                     try again.
                   </div>
                 )}
@@ -348,24 +367,38 @@ const Register = () => {
                 ></Form.Control>
                 {isUsernameValid === false && username !== "" && (
                   <div className="assist">
-                    <span role="img" aria-label="warning">⚠️ </span> Username has to be consisted of only alphabets and
-                    numbers.
+                    <span role="img" aria-label="warning">
+                      ⚠️{" "}
+                    </span>{" "}
+                    Username has to be consisted of only alphabets and numbers.
                   </div>
                 )}
                 {username.length <= 3 && username !== "" && (
                   <div className="assist">
-                    <span role="img" aria-label="warning">⚠️ </span> Username has to be more than 3 characters long.
+                    <span role="img" aria-label="warning">
+                      ⚠️{" "}
+                    </span>{" "}
+                    Username has to be more than 3 characters long.
                   </div>
                 )}
 
                 {doesUsernameExistsonDb && (
                   <div className="assist">
-                    <span role="img" aria-label="error"> ❌</span> Unfortunately, the username had been taken. Please,
-                    choose another username.
+                    <span role="img" aria-label="error">
+                      {" "}
+                      ❌
+                    </span>{" "}
+                    Unfortunately, the username had been taken. Please, choose
+                    another username.
                   </div>
                 )}
                 {doesUsernameExistsonDb === false && isUsernameValid && (
-                  <div className="go"><span role="img" aria-label="correct">✔️</span> Username looks good. </div>
+                  <div className="go">
+                    <span role="img" aria-label="correct">
+                      ✔️
+                    </span>{" "}
+                    Username looks good.{" "}
+                  </div>
                 )}
               </Form.Group>
               <Form.Group className="mb-2">
@@ -376,12 +409,20 @@ const Register = () => {
                   onChange={passwordHandler}
                   value={password}
                 ></Form.Control>
-                {isPasswordValid() && (
-                  <PasswordStrengthIndicator password={password} />
+                {isPasswordValid() && passwordStrength(password).id < 2 && (
+                  <div className="assist">
+                    <span role="img" aria-label="warning">
+                      ⚠️
+                    </span>
+                    Password is {passwordStrength(password).value.toLowerCase()}
+                  </div>
                 )}
                 {isPasswordValid() === false && password !== "" && (
                   <div className="assist">
-                    <span role="img" aria-label="warning">⚠️ </span>Password must be more than six characters.
+                    <span role="img" aria-label="warning">
+                      ⚠️{" "}
+                    </span>
+                    Password must be more than six characters.
                   </div>
                 )}
               </Form.Group>
@@ -393,22 +434,43 @@ const Register = () => {
                   onChange={passwordRepeatHandler}
                   value={passwordRepeat}
                 ></Form.Control>
-                {isPasswordRepeatValid() && (
-                  <PasswordStrengthIndicator password={passwordRepeat} />
-                )}
+                {isPasswordRepeatValid() &&
+                  passwordStrength(passwordRepeat).id < 2 && (
+                    <div className="assist">
+                      <span role="img" aria-label="warning">
+                        ⚠️
+                      </span>
+                      Password is {passwordStrength(passwordRepeat).id}
+                    </div>
+                  )}
+
                 {isPasswordRepeatValid() === false && passwordRepeat !== "" && (
                   <div className="assist">
-                    <span role="img" aria-label="warning">⚠️ </span> Password must be more than six characters.
+                    <span role="img" aria-label="warning">
+                      ⚠️{" "}
+                    </span>{" "}
+                    Password must be more than six characters.
                   </div>
                 )}
                 {isPasswordRepeated() === false && passwordRepeat !== "" && (
-                  <div className="assist"><span role="img" aria-label="warning">⚠️ </span> Passwords don't match. </div>
+                  <div className="assist">
+                    <span role="img" aria-label="warning">
+                      ⚠️{" "}
+                    </span>{" "}
+                    Passwords don't match.{" "}
+                  </div>
                 )}
                 {isPasswordRepeatValid() &&
                   isPasswordValid() &&
                   isPasswordRepeated() === true &&
-                  passwordRepeat !== "" && (
-                    <div className="go"><span role="img" aria-label="correct">✔️ </span> Passwords match!</div>
+                  passwordStrength(password).id > 1 &&
+                  passwordStrength(passwordRepeat).id > 1 && (
+                    <div className="go">
+                      <span role="img" aria-label="correct">
+                        ✔️{" "}
+                      </span>{" "}
+                      Passwords match!
+                    </div>
                   )}
               </Form.Group>
               <Form.Label>
