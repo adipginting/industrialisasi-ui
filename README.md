@@ -2,18 +2,18 @@
 
 This is the interface of Industrialisasi CMS. This interface is mainly developed using HTML, React.js, React-Bootstrap, and some CSS. There is a plan to introduce a more complex and visually enchanting UI, but I will not rush to it. This software comes with no support and guarantee. Use it at your own risk.
 
-## To test it on your local machine, run this code:
+## To run it on your local computer, use this:
     git clone https://github.com/adipginting/industrialisasi-interface
     cd industrialisasi-interface
     npm install
     npm start
     
-## Via docker:
+## To run it via docker:
     git clone https://github.com/adipginting/industrialisasi-interface
     cd industrialisasi-interface
     sudo docker run -p 3000:3000 -d
     
-## Via docker compose:
+## To run it via docker compose:
 Alternatively, I created this repository to run the whole website (the database server, the api server, and the front-end server) via docker compose (work in progress). See https://github.com/adipginting/industrialisasi
 
 ## To do and progress:
