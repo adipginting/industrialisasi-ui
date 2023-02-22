@@ -13,7 +13,9 @@ This is mainly a personal project. The initial purpose was initially to learn Re
     cd industrialisasi-interface
     sudo docker run -p 3000:3000 -d
     
-    
+## Alternatively, I created this repository to run the whole website (the database server, the api server, and the front-end server) via docker compose (work in progress).
+See https://github.com/adipginting/industrialisasi
+
 ## To do and progres:
 - [x] It displays a three navigation menus on header.
 - [x] On register page, it does character contraints on email, username, and passwords.
