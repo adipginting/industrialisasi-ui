@@ -1,6 +1,6 @@
 # Industrialisasi Interface
 
-This is mainly a personal project. The initial purpose was initially to learn ReactJS, but I plan to use it as my personal blog. You can use it for your need, but this comes at no guarantee and support.
+This is the interface of Industrialisasi CMS. This interface is mainly developed using HTML, React.js, React-Bootstrap, and some CSS. There is a plan to introduce a more complex and visually enchanting UI, but I will not rush to it. This software comes with no support and guarantee. Use it at your own risk.
 
 ## To test it on your local machine, run this code:
     git clone https://github.com/adipginting/industrialisasi-interface
