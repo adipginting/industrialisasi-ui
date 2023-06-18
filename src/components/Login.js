@@ -1,37 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Container, Col, Row, Button, Form } from "react-bootstrap";
 import validator from "validator";
-import Header from './Header';
+import Header from "./Header";
 import { api, getUsername } from "../api";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../css/custom.css";
-
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState('');
+  const [loggedInUser, setLoggedInUser] = useState("");
   const [justLoggedIn, setJustLoggedIn] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkIfLoggedIn = async () => {
-      if(await getUsername() !== ''){
+      if ((await getUsername()) !== "") {
         setLoggedInUser(await getUsername());
         setIsLoggedIn(true);
       } else {
         setIsLoggedIn(false);
-        setLoggedInUser('');
+        setLoggedInUser("");
       }
     };
     checkIfLoggedIn();
   }, [setIsLoggedIn, setLoggedInUser]);
 
   useEffect(() => {
-    if(isLoggedIn === true)
-      navigate('/');
+    if (isLoggedIn === true) navigate("/");
   }, [isLoggedIn, navigate]);
 
   const usernameHandler = (event) => {
@@ -45,7 +43,7 @@ const Login = () => {
   };
 
   const isUsernameValid = () => {
-    if (validator.isAlphanumeric(username)){
+    if (validator.isAlphanumeric(username)) {
       return true;
     }
     return false;
@@ -57,11 +55,7 @@ const Login = () => {
   };
 
   const areLoginFieldsValid = () => {
-    if (
-      isUsernameValid() &&
-      isPasswordValid()
-    )
-      return true;
+    if (isUsernameValid() && isPasswordValid()) return true;
     return false;
   };
 
@@ -76,10 +70,7 @@ const Login = () => {
     };
 
     const onSubmit = async () => {
-      if (
-        username === "" ||
-        password === ""
-      ) {
+      if (username === "" || password === "") {
         alert("Please fill all of the fields before submitting.");
         event.preventDefault();
       } else if (areLoginFieldsValid() === false) {
@@ -99,17 +90,14 @@ const Login = () => {
     };
     onSubmit(); //call onsubmit function which is an async function.
     event.preventDefault();
-
   };
-
 
   return (
     <Container fluid="lg">
       <Row>
         <Col md={2}></Col>
         <Col md={4}>
-          <Header user={loggedInUser} recentlyLoggedIn={justLoggedIn}/>
-          <Form onSubmit={onSubmitHandler} >
+          <Form onSubmit={onSubmitHandler}>
             <p className="mt-2">Industrialisasi Login. </p>
             <div className="mb-2">
               <p>Please enter your username and password. </p>

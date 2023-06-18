@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import Header from "./Header";
 import { api, getUsername } from "../api";
+import { UserContext } from "./UserContext";
 
 const Post = ({ title, author, postedAt, lastEditAt, post }) => {
   const jsDate = (pgDate) => {
@@ -13,7 +14,9 @@ const Post = ({ title, author, postedAt, lastEditAt, post }) => {
       <h1>{title}</h1>
       <p>
         An article by {author} on {jsDate(postedAt)}{" "}
-        {lastEditAt !== null && <span>(last edit on {jsDate(lastEditAt)})</span>}
+        {lastEditAt !== null && (
+          <span>(last edit on {jsDate(lastEditAt)})</span>
+        )}
       </p>
       <div>{post}</div>
     </div>
@@ -39,10 +42,8 @@ const Home = () => {
   useEffect(() => {
     const getPosts = async () => {
       const { data } = await api.post("/posts", { no_posts: noPosts });
-      if(typeof(data.rows) === 'undefined')
-        setPosts([]);
-      else
-        setPosts(data.rows);
+      if (typeof data.rows === "undefined") setPosts([]);
+      else setPosts(data.rows);
     };
 
     getPosts();
@@ -53,11 +54,13 @@ const Home = () => {
     event.preventDefault();
   };
 
+  const userMessage = useContext(UserContext);
+
   return (
     <div>
       <Container fluid="lg">
         <Row>
-          <Col md></Col>
+          <Col md>{userMessage}</Col>
           <Col md={8}>
             <Header user={loggedInUser} recentlyLoggedIn={false} />
             {posts.map((post) => {
@@ -72,10 +75,11 @@ const Home = () => {
                 />
               );
             })}
-          {
-            ( posts.length >= noPosts) &&
-            <Button onClick={morePosts} className="mt-4">Load more posts </Button>
-          }
+            {posts.length >= noPosts && (
+              <Button onClick={morePosts} className="mt-4">
+                Load more posts{" "}
+              </Button>
+            )}
           </Col>
           <Col md></Col>
         </Row>

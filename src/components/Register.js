@@ -175,7 +175,7 @@ const Register = () => {
         event.preventDefault();
       } else if (areRegistrationFieldsValid()) {
         const loginInfo = {
-          "code": verifier,
+          code: verifier,
           username: username,
           password: password,
         };
