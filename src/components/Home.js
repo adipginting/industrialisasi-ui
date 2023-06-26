@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import Header from "./Header";
-import { api, getUsername } from "../api";
-import { UserContext } from "./UserContext";
+import { api, getUsername } from "../components/api";
+import { UserContext } from "./";
 
 const Post = ({ title, author, postedAt, lastEditAt, post }) => {
   const jsDate = (pgDate) => {
@@ -57,34 +57,25 @@ const Home = () => {
   const userMessage = useContext(UserContext);
 
   return (
-    <div>
-      <Container fluid="lg">
-        <Row>
-          <Col md>{userMessage}</Col>
-          <Col md={8}>
-            <Header user={loggedInUser} recentlyLoggedIn={false} />
-            {posts.map((post) => {
-              return (
-                <Post
-                  key={post.PostId}
-                  title={post.Title}
-                  author={post.Username}
-                  postedAt={post.PostedAt}
-                  lastEditAt={post.LastEditedAt}
-                  post={post.Post}
-                />
-              );
-            })}
-            {posts.length >= noPosts && (
-              <Button onClick={morePosts} className="mt-4">
-                Load more posts{" "}
-              </Button>
-            )}
-          </Col>
-          <Col md></Col>
-        </Row>
-      </Container>
-    </div>
+    <>
+      {posts.map((post) => {
+        return (
+          <Post
+            key={post.PostId}
+            title={post.Title}
+            author={post.Username}
+            postedAt={post.PostedAt}
+            lastEditAt={post.LastEditedAt}
+            post={post.Post}
+          />
+        );
+      })}
+      {posts.length >= noPosts && (
+        <Button onClick={morePosts} className="mt-4">
+          Load more posts{" "}
+        </Button>
+      )}
+    </>
   );
 };
 

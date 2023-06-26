@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Container, Col, Row, Button, Form } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import validator from "validator";
-import Header from "./Header";
-import { api, getUsername } from "../api";
+import { api, getUsername } from "../components/api";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../css/custom.css";
 
@@ -93,39 +92,31 @@ const Login = () => {
   };
 
   return (
-    <Container fluid="lg">
-      <Row>
-        <Col md={2}></Col>
-        <Col md={4}>
-          <Form onSubmit={onSubmitHandler}>
-            <p className="mt-2">Industrialisasi Login. </p>
-            <div className="mb-2">
-              <p>Please enter your username and password. </p>
-            </div>
-            <Form.Group className="mb-2">
-              <Form.Label>Username: </Form.Label>
-              <Form.Control
-                type="username"
-                placeholder="username"
-                onChange={usernameHandler}
-                value={username}
-              ></Form.Control>
-            </Form.Group>
-            <Form.Group className="mb-2">
-              <Form.Label> Password: </Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Password"
-                onChange={passwordHandler}
-                value={password}
-              ></Form.Control>
-            </Form.Group>
-            <Button type="submit">Login</Button>
-          </Form>
-        </Col>
-        <Col md></Col>
-      </Row>
-    </Container>
+    <Form onSubmit={onSubmitHandler}>
+      <p className="mt-2">Industrialisasi Login. </p>
+      <div className="mb-2">
+        <p>Please enter your username and password. </p>
+      </div>
+      <Form.Group className="mb-2">
+        <Form.Label>Username: </Form.Label>
+        <Form.Control
+          type="username"
+          placeholder="username"
+          onChange={usernameHandler}
+          value={username}
+        ></Form.Control>
+      </Form.Group>
+      <Form.Group className="mb-2">
+        <Form.Label> Password: </Form.Label>
+        <Form.Control
+          type="password"
+          placeholder="Password"
+          onChange={passwordHandler}
+          value={password}
+        ></Form.Control>
+      </Form.Group>
+      <Button type="submit">Login</Button>
+    </Form>
   );
 };
 export default Login;

@@ -1,17 +1,13 @@
 import React from "react";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../css/custom.css";
-import Container from "react-bootstrap/Container";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useState, useEffect } from "react";
 import validator from "validator";
 import { passwordStrength } from "check-password-strength";
-import { api, getUsername } from "../api";
+import { api, getUsername } from "../components/api";
 import { useNavigate } from "react-router-dom";
-import Header from "./Header";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -256,234 +252,227 @@ const Register = () => {
   };
 
   return (
-    <Container fluid="lg">
-      <Row>
-        <Col md={2}></Col>
-        <Col md={4}>
-          <Header user={loggedInUser} recentlyLoggedIn={false} />
-          {isEmailSent === false && (
-            <Form onSubmit={emailSubmitHandler}>
-              <p className="mt-2">Industrialisasi registration. </p>
-              <div className="mb-2">
-                <p>Please enter your email. </p>
+    <>
+      {isEmailSent === false && (
+        <Form onSubmit={emailSubmitHandler}>
+          <p className="mt-2">Industrialisasi registration. </p>
+          <div className="mb-2">
+            <p>Please enter your email. </p>
+          </div>
+          <Form.Group className="mb-2">
+            <Form.Label> Email: </Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="email"
+              onChange={emailHandler}
+              value={email}
+            ></Form.Control>
+            {isEmailValid === false && email !== "" && (
+              <div className="assist">
+                <span role="img" aria-label="warning">
+                  ⚠️{" "}
+                </span>
+                Please use a real email.{" "}
               </div>
-              <Form.Group className="mb-2">
-                <Form.Label> Email: </Form.Label>
-                <Form.Control
-                  type="email"
-                  placeholder="email"
-                  onChange={emailHandler}
-                  value={email}
-                ></Form.Control>
-                {isEmailValid === false && email !== "" && (
-                  <div className="assist">
-                    <span role="img" aria-label="warning">
-                      ⚠️{" "}
-                    </span>
-                    Please use a real email.{" "}
-                  </div>
-                )}
-                {doesEmailExistsonDb && (
-                  <div className="assist">
-                    <span role="img" aria-label="error">
-                      ❌
-                    </span>{" "}
-                    This email has been registered. Please use another email.
-                  </div>
-                )}
-                {doesEmailExistsonDb === false && isEmailValid && (
-                  <div className="go">
-                    <span role="img" aria-label="correct">
-                      ✔️{" "}
-                    </span>
-                    Email looks good.{" "}
-                  </div>
-                )}
-                <Button type="submit" className="mt-2">
-                  Submit Email
-                </Button>
-              </Form.Group>
-            </Form>
-          )}
-          {isEmailSent === true && isVerifierCodeValid === false && (
-            <Form onSubmit={submitVerifierCode}>
-              <p className="mt-2">
-                <p>Industrialisasi registration. </p>
-              </p>
-              <div className="mb-2">
-                <p>
-                  Please check <span className="go">{email}'s </span> inbox/spam
-                  folder, a six character code has been sent to your email.{" "}
-                </p>
+            )}
+            {doesEmailExistsonDb && (
+              <div className="assist">
+                <span role="img" aria-label="error">
+                  ❌
+                </span>{" "}
+                This email has been registered. Please use another email.
               </div>
-              <Form.Group className="mb-2">
-                <Form.Label> Six character verifier code: </Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="verifier code"
-                  onChange={verifierHandler}
-                  value={verifier}
-                ></Form.Control>
-                {isVerifierCodeValid === false &&
-                  verifier !== "" &&
-                  verifier.length < 6 && (
-                    <div className="assist">
-                      <span role="img" aria-label="warning">
-                        ⚠️{" "}
-                      </span>
-                      The Verifier code consists of six character of numbers and
-                      letters.{" "}
-                    </div>
-                  )}
-                {hasVerifierCodeTimedout === true && (
-                  <div className="assist">
-                    <span role="img" aria-label="error">
-                      ❌
-                    </span>{" "}
-                    Timeout. The code is no longer valid. Refresh the page to
-                    try again.
-                  </div>
-                )}
-
-                <Button type="submit" className="mt-2">
-                  Submit code
-                </Button>
-              </Form.Group>
-            </Form>
-          )}
-          {isVerifierCodeValid === true && (
-            <Form onSubmit={onSubmitHandler}>
-              <p className="mt-2">Industrialisasi registration. </p>
-              <div className="mb-2">
-                <p>Please enter your username and password. </p>
+            )}
+            {doesEmailExistsonDb === false && isEmailValid && (
+              <div className="go">
+                <span role="img" aria-label="correct">
+                  ✔️{" "}
+                </span>
+                Email looks good.{" "}
               </div>
-              <Form.Group className="mb-2">
-                <Form.Label>Username*: </Form.Label>
-                <Form.Control
-                  type="username"
-                  placeholder="username"
-                  onChange={usernameHandler}
-                  value={username}
-                ></Form.Control>
-                {isUsernameValid === false && username !== "" && (
-                  <div className="assist">
-                    <span role="img" aria-label="warning">
-                      ⚠️{" "}
-                    </span>{" "}
-                    Username has to be consisted of only alphabets and numbers.
-                  </div>
-                )}
-                {username.length <= 3 && username !== "" && (
-                  <div className="assist">
-                    <span role="img" aria-label="warning">
-                      ⚠️{" "}
-                    </span>{" "}
-                    Username has to be more than 3 characters long.
-                  </div>
-                )}
+            )}
+            <Button type="submit" className="mt-2">
+              Submit Email
+            </Button>
+          </Form.Group>
+        </Form>
+      )}
+      {isEmailSent === true && isVerifierCodeValid === false && (
+        <Form onSubmit={submitVerifierCode}>
+          <p className="mt-2">
+            <p>Industrialisasi registration. </p>
+          </p>
+          <div className="mb-2">
+            <p>
+              Please check <span className="go">{email}'s </span> inbox/spam
+              folder, a six character code has been sent to your email.{" "}
+            </p>
+          </div>
+          <Form.Group className="mb-2">
+            <Form.Label> Six character verifier code: </Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="verifier code"
+              onChange={verifierHandler}
+              value={verifier}
+            ></Form.Control>
+            {isVerifierCodeValid === false &&
+              verifier !== "" &&
+              verifier.length < 6 && (
+                <div className="assist">
+                  <span role="img" aria-label="warning">
+                    ⚠️{" "}
+                  </span>
+                  The Verifier code consists of six character of numbers and
+                  letters.{" "}
+                </div>
+              )}
+            {hasVerifierCodeTimedout === true && (
+              <div className="assist">
+                <span role="img" aria-label="error">
+                  ❌
+                </span>{" "}
+                Timeout. The code is no longer valid. Refresh the page to try
+                again.
+              </div>
+            )}
 
-                {doesUsernameExistsonDb && (
-                  <div className="assist">
-                    <span role="img" aria-label="error">
-                      {" "}
-                      ❌
-                    </span>{" "}
-                    Unfortunately, the username had been taken. Please, choose
-                    another username.
-                  </div>
-                )}
-                {doesUsernameExistsonDb === false && isUsernameValid && (
-                  <div className="go">
-                    <span role="img" aria-label="correct">
-                      ✔️
-                    </span>{" "}
-                    Username looks good.{" "}
-                  </div>
-                )}
-              </Form.Group>
-              <Form.Group className="mb-2">
-                <Form.Label> Password*: </Form.Label>
-                <Form.Control
-                  type="password"
-                  placeholder="Password"
-                  onChange={passwordHandler}
-                  value={password}
-                ></Form.Control>
-                {isPasswordValid() && passwordStrength(password).id < 2 && (
-                  <div className="assist">
-                    <span role="img" aria-label="warning">
-                      ⚠️
-                    </span>
-                    Password is {passwordStrength(password).value.toLowerCase()}
-                  </div>
-                )}
-                {isPasswordValid() === false && password !== "" && (
-                  <div className="assist">
-                    <span role="img" aria-label="warning">
-                      ⚠️{" "}
-                    </span>
-                    Password must be more than six characters.
-                  </div>
-                )}
-              </Form.Group>
-              <Form.Group className="mb-2">
-                <Form.Label> Repeat password*: </Form.Label>
-                <Form.Control
-                  type="password"
-                  placeholder="Repeat password"
-                  onChange={passwordRepeatHandler}
-                  value={passwordRepeat}
-                ></Form.Control>
-                {isPasswordRepeatValid() &&
-                  passwordStrength(passwordRepeat).id < 2 && (
-                    <div className="assist">
-                      <span role="img" aria-label="warning">
-                        ⚠️
-                      </span>
-                      Password is {passwordStrength(passwordRepeat).id}
-                    </div>
-                  )}
+            <Button type="submit" className="mt-2">
+              Submit code
+            </Button>
+          </Form.Group>
+        </Form>
+      )}
+      {isVerifierCodeValid === true && (
+        <Form onSubmit={onSubmitHandler}>
+          <p className="mt-2">Industrialisasi registration. </p>
+          <div className="mb-2">
+            <p>Please enter your username and password. </p>
+          </div>
+          <Form.Group className="mb-2">
+            <Form.Label>Username*: </Form.Label>
+            <Form.Control
+              type="username"
+              placeholder="username"
+              onChange={usernameHandler}
+              value={username}
+            ></Form.Control>
+            {isUsernameValid === false && username !== "" && (
+              <div className="assist">
+                <span role="img" aria-label="warning">
+                  ⚠️{" "}
+                </span>{" "}
+                Username has to be consisted of only alphabets and numbers.
+              </div>
+            )}
+            {username.length <= 3 && username !== "" && (
+              <div className="assist">
+                <span role="img" aria-label="warning">
+                  ⚠️{" "}
+                </span>{" "}
+                Username has to be more than 3 characters long.
+              </div>
+            )}
 
-                {isPasswordRepeatValid() === false && passwordRepeat !== "" && (
-                  <div className="assist">
-                    <span role="img" aria-label="warning">
-                      ⚠️{" "}
-                    </span>{" "}
-                    Password must be more than six characters.
-                  </div>
-                )}
-                {isPasswordRepeated() === false && passwordRepeat !== "" && (
-                  <div className="assist">
-                    <span role="img" aria-label="warning">
-                      ⚠️{" "}
-                    </span>{" "}
-                    Passwords don't match.{" "}
-                  </div>
-                )}
-                {isPasswordRepeatValid() &&
-                  isPasswordValid() &&
-                  isPasswordRepeated() === true &&
-                  passwordStrength(password).id > 1 &&
-                  passwordStrength(passwordRepeat).id > 1 && (
-                    <div className="go">
-                      <span role="img" aria-label="correct">
-                        ✔️{" "}
-                      </span>{" "}
-                      Passwords match!
-                    </div>
-                  )}
-              </Form.Group>
-              <Form.Label>
-                <div>*) Required.</div>
-              </Form.Label>
-              <br />
-              <Button type="submit">Create Account</Button>
-            </Form>
-          )}
-        </Col>
-        <Col md></Col>
-      </Row>
-    </Container>
+            {doesUsernameExistsonDb && (
+              <div className="assist">
+                <span role="img" aria-label="error">
+                  {" "}
+                  ❌
+                </span>{" "}
+                Unfortunately, the username had been taken. Please, choose
+                another username.
+              </div>
+            )}
+            {doesUsernameExistsonDb === false && isUsernameValid && (
+              <div className="go">
+                <span role="img" aria-label="correct">
+                  ✔️
+                </span>{" "}
+                Username looks good.{" "}
+              </div>
+            )}
+          </Form.Group>
+          <Form.Group className="mb-2">
+            <Form.Label> Password*: </Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              onChange={passwordHandler}
+              value={password}
+            ></Form.Control>
+            {isPasswordValid() && passwordStrength(password).id < 2 && (
+              <div className="assist">
+                <span role="img" aria-label="warning">
+                  ⚠️
+                </span>
+                Password is {passwordStrength(password).value.toLowerCase()}
+              </div>
+            )}
+            {isPasswordValid() === false && password !== "" && (
+              <div className="assist">
+                <span role="img" aria-label="warning">
+                  ⚠️{" "}
+                </span>
+                Password must be more than six characters.
+              </div>
+            )}
+          </Form.Group>
+          <Form.Group className="mb-2">
+            <Form.Label> Repeat password*: </Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Repeat password"
+              onChange={passwordRepeatHandler}
+              value={passwordRepeat}
+            ></Form.Control>
+            {isPasswordRepeatValid() &&
+              passwordStrength(passwordRepeat).id < 2 && (
+                <div className="assist">
+                  <span role="img" aria-label="warning">
+                    ⚠️
+                  </span>
+                  Password is {passwordStrength(passwordRepeat).id}
+                </div>
+              )}
+
+            {isPasswordRepeatValid() === false && passwordRepeat !== "" && (
+              <div className="assist">
+                <span role="img" aria-label="warning">
+                  ⚠️{" "}
+                </span>{" "}
+                Password must be more than six characters.
+              </div>
+            )}
+            {isPasswordRepeated() === false && passwordRepeat !== "" && (
+              <div className="assist">
+                <span role="img" aria-label="warning">
+                  ⚠️{" "}
+                </span>{" "}
+                Passwords don't match.{" "}
+              </div>
+            )}
+            {isPasswordRepeatValid() &&
+              isPasswordValid() &&
+              isPasswordRepeated() === true &&
+              passwordStrength(password).id > 1 &&
+              passwordStrength(passwordRepeat).id > 1 && (
+                <div className="go">
+                  <span role="img" aria-label="correct">
+                    ✔️{" "}
+                  </span>{" "}
+                  Passwords match!
+                </div>
+              )}
+          </Form.Group>
+          <Form.Label>
+            <div>*) Required.</div>
+          </Form.Label>
+          <br />
+          <Button type="submit">Create Account</Button>
+        </Form>
+      )}
+    </>
   );
 };
 export default Register;

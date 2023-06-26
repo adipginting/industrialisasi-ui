@@ -1,36 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Container, Col, Row, Button, Form } from "react-bootstrap";
-import Header from './Header';
-import { api, getUsername } from "../api";
+import Header from "./Header";
+import { api, getUsername } from "../components/api";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../css/custom.css";
 
-
 const Login = () => {
-  const [title, setTitle ] = useState("");
+  const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState('');
+  const [loggedInUser, setLoggedInUser] = useState("");
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkIfLoggedIn = async () => {
-      if(await getUsername() !== ''){
+      if ((await getUsername()) !== "") {
         setLoggedInUser(await getUsername());
         setIsLoggedIn(true);
       } else {
         setIsLoggedIn(false);
-        setLoggedInUser('');
+        setLoggedInUser("");
       }
     };
     checkIfLoggedIn();
   }, [setIsLoggedIn, setLoggedInUser]);
 
   useEffect(() => {
-//    if(isLoggedIn === true)
-   //   navigate('/login');
+    //    if(isLoggedIn === true)
+    //   navigate('/login');
   }, [isLoggedIn, navigate]);
 
   const titleHandler = (event) => {
@@ -46,7 +45,7 @@ const Login = () => {
   const onSubmitHandler = (event) => {
     const postThePost = async () => {
       try {
-        const thePost = {'title':title, 'content': content};
+        const thePost = { title: title, content: content };
         const { data } = await api.post("/post", thePost);
         console.log(data);
       } catch (error) {
@@ -56,7 +55,6 @@ const Login = () => {
 
     postThePost();
     event.preventDefault();
-
   };
 
   return (
@@ -65,7 +63,7 @@ const Login = () => {
         <Col></Col>
         <Col md={8}>
           <Header user={loggedInUser} isWriting={true} />
-          <Form onSubmit={onSubmitHandler} >
+          <Form onSubmit={onSubmitHandler}>
             <p className="mt-2">Write new post. </p>
             <Form.Group className="mb-2">
               <Form.Label>Post title </Form.Label>
