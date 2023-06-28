@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Container, Row, Col, Button } from "react-bootstrap";
-import Header from "./Header";
+import { Button } from "react-bootstrap";
 import { api, getUsername } from "../components/api";
-import { UserContext } from "./";
+import { useSelector } from "react-redux";
 
 const Post = ({ title, author, postedAt, lastEditAt, post }) => {
   const jsDate = (pgDate) => {
@@ -27,34 +26,16 @@ const Home = () => {
   const [loggedInUser, setLoggedInUser] = useState("");
   const [posts, setPosts] = useState([]);
   const [noPosts, setNoPosts] = useState(5);
+  const user = useSelector((state) => state.login.loggedInUser);
 
   useEffect(() => {
-    const checkIfLoggedIn = async () => {
-      if ((await getUsername()) !== "no") {
-        setLoggedInUser(await getUsername());
-      } else {
-        setLoggedInUser("no");
-      }
-    };
-    checkIfLoggedIn();
-  }, [setLoggedInUser]);
-
-  useEffect(() => {
-    const getPosts = async () => {
-      const { data } = await api.post("/posts", { no_posts: noPosts });
-      if (typeof data.rows === "undefined") setPosts([]);
-      else setPosts(data.rows);
-    };
-
-    getPosts();
-  }, [noPosts]);
+    console.log(user);
+  }, [user]);
 
   const morePosts = (event) => {
     setNoPosts(noPosts + 5);
     event.preventDefault();
   };
-
-  const userMessage = useContext(UserContext);
 
   return (
     <>
