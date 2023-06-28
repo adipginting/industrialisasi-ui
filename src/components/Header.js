@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Navbar, Nav } from "react-bootstrap";
-import { useQuery } from "@tanstack/react-query";
-import { getUsername } from "./api";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { getUsername, logoutUser } from "./api";
 import { loggedInUserAdded } from "./redux";
 import { useDispatch } from "react-redux";
 
@@ -16,9 +16,15 @@ const Header = () => {
     queryFn: getUsername,
   });
 
+  const sendLogout = useMutation({
+    mutationFn: logoutUser,
+  });
+
   const logout = (event) => {
     setLoggedInUser("");
+    dispatch(loggedInUserAdded(loggedInUser));
     event.preventDefault();
+    sendLogout.mutate();
     window.location.reload();
   };
 
