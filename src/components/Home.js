@@ -1,7 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState } from "react";
 import { Button } from "react-bootstrap";
-import { api, getUsername } from "../components/api";
-import { useSelector } from "react-redux";
 
 const Post = ({ title, author, postedAt, lastEditAt, post }) => {
   const jsDate = (pgDate) => {
@@ -23,14 +21,8 @@ const Post = ({ title, author, postedAt, lastEditAt, post }) => {
 };
 
 const Home = () => {
-  const [loggedInUser, setLoggedInUser] = useState("");
   const [posts, setPosts] = useState([]);
   const [noPosts, setNoPosts] = useState(5);
-  const user = useSelector((state) => state.login.loggedInUser);
-
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
 
   const morePosts = (event) => {
     setNoPosts(noPosts + 5);

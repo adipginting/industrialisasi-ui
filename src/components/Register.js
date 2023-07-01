@@ -6,8 +6,9 @@ import Form from "react-bootstrap/Form";
 import { useState, useEffect } from "react";
 import validator from "validator";
 import { passwordStrength } from "check-password-strength";
-import { api, getUsername } from "../components/api";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { api } from './api';
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -23,27 +24,14 @@ const Register = () => {
   const [isUsernameValid, setUsernameValidity] = useState(false);
   const [doesUsernameExistsonDb, setUsernameExistenceOnDb] = useState(false);
 
-  //if already logged in, redirect
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState("");
+  const loggedInUser = useSelector((state) => state.login.loggedInUser);
   const navigator = useNavigate();
 
   useEffect(() => {
-    const checkIfLoggedIn = async () => {
-      if ((await getUsername()) !== "") {
-        setLoggedInUser(await getUsername());
-        setIsLoggedIn(true);
-      } else {
-        setIsLoggedIn(false);
-        setLoggedInUser("");
-      }
-    };
-    checkIfLoggedIn();
-  }, [setIsLoggedIn, setLoggedInUser]);
-
-  useEffect(() => {
-    if (isLoggedIn === true) navigator("/");
-  }, [isLoggedIn, navigator]);
+    if (loggedInUser !== "") {
+      navigator("/");
+    }
+  }, [loggedInUser, navigator]);
 
   //fetch email
   useEffect(() => {
@@ -73,7 +61,7 @@ const Register = () => {
     return () => {
       clearTimeout(delay);
     };
-  }, [email, setEmailValidity, setEmailExistenceOnDb]);
+  }, [email]);
 
   useEffect(() => {
     const checkUsername = async (_username_) => {
@@ -102,7 +90,7 @@ const Register = () => {
     return () => {
       clearTimeout(delay);
     };
-  }, [username, setUsernameValidity, setUsernameExistenceOnDb]);
+  }, [username]);
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -114,7 +102,7 @@ const Register = () => {
     return () => {
       clearTimeout(delay);
     };
-  }, [isEmailSent, setVerifierCodeTimedout]);
+  }, [isEmailSent]);
 
   const emailHandler = (event) => {
     setEmail(event.target.value);

@@ -2,35 +2,22 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Col, Row, Button, Form } from "react-bootstrap";
 import Header from "./Header";
-import { api, getUsername } from "../components/api";
+import { api } from "../components/api";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../css/custom.css";
+import { useSelector } from "react-redux";
 
 const Login = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState("");
-
+  const loggedInUser = useSelector((state) => state.login.loggedInUser);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkIfLoggedIn = async () => {
-      if ((await getUsername()) !== "") {
-        setLoggedInUser(await getUsername());
-        setIsLoggedIn(true);
-      } else {
-        setIsLoggedIn(false);
-        setLoggedInUser("");
-      }
-    };
-    checkIfLoggedIn();
-  }, [setIsLoggedIn, setLoggedInUser]);
-
-  useEffect(() => {
-    //    if(isLoggedIn === true)
-    //   navigate('/login');
-  }, [isLoggedIn, navigate]);
+    if (loggedInUser === "") {
+      navigate("/login");
+    }
+  }, [loggedInUser, navigate]);
 
   const titleHandler = (event) => {
     setTitle(event.target.value);

@@ -1,35 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Form } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import validator from "validator";
-import { api, getUsername } from "../components/api";
+import { useMutation } from "@tanstack/react-query";
+import { loginUser } from "./api";
+
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../css/custom.css";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState("");
-  const [justLoggedIn, setJustLoggedIn] = useState(false);
+  const loggedInUser = useSelector((state) => state.login.loggedInUser);
+
+  const sendLogout = useMutation({
+    mutationFn: loginUser(),
+  });
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkIfLoggedIn = async () => {
-      if ((await getUsername()) !== "") {
-        setLoggedInUser(await getUsername());
-        setIsLoggedIn(true);
-      } else {
-        setIsLoggedIn(false);
-        setLoggedInUser("");
-      }
-    };
-    checkIfLoggedIn();
-  }, [setIsLoggedIn, setLoggedInUser]);
-
-  useEffect(() => {
-    if (isLoggedIn === true) navigate("/");
-  }, [isLoggedIn, navigate]);
+    if (loggedInUser !== "") {
+      navigate("/");
+    }
+    //    console.log("Loggedin user is ", loggedInUser === "");
+  }, [loggedInUser, navigate]);
 
   const usernameHandler = (event) => {
     setUsername(event.target.value);
@@ -59,10 +55,9 @@ const Login = () => {
   };
 
   const onSubmitHandler = (event) => {
-    const postLoginInfo = async (_loginInfo_) => {
+    const postLoginInfo = async (loginInfo) => {
       try {
-        const { data } = await api.post("/login", _loginInfo_);
-        localStorage.setItem("jwttoken", data);
+        sendLogout.mutate(loginInfo);
       } catch (error) {
         console.error(error);
       }
@@ -83,8 +78,8 @@ const Login = () => {
         await postLoginInfo(loginInfo);
         setUsername("");
         setPassword("");
-        setJustLoggedIn(true);
         event.preventDefault();
+        window.location.reload();
       }
     };
     onSubmit(); //call onsubmit function which is an async function.
