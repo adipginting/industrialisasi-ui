@@ -1,7 +1,8 @@
-FROM node:16 as build
+FROM node:18 as build
 WORKDIR /usr/local/interface
 COPY package*.json ./
 COPY . .
+RUN npm install
 RUN npm ci
 RUN npm run build
 
