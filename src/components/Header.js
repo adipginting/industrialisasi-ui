@@ -1,33 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Navbar, Nav } from "react-bootstrap";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { getUsername, logoutUser } from "./api";
+import { loggedInUserAdded } from "./redux";
+import { useDispatch } from "react-redux";
 
-const Header = ({ user, recentlyLoggedIn, isWriting }) => {
-  const [loggedInUser, setLoggedInUser] = useState(user);
-  const [justLoggedOut, setJustLoggedOut] = useState(false);
-  const [justLoggedIn, setJustLoggedIn] = useState(recentlyLoggedIn);
+const Header = () => {
+  const [loggedInUser, setLoggedInUser] = useState("");
+  const [isWriting, setIsWriting] = useState(false);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    setLoggedInUser(user);
-  }, [user]); // this is required to use a prop value as an initial value to a state hook
-  useEffect(() => {
-    setJustLoggedIn(recentlyLoggedIn);
-  }, [recentlyLoggedIn]);
+  const { data } = useQuery({
+    queryKey: ["user"],
+    queryFn: getUsername,
+  });
 
-  useEffect(() => {
-    if (justLoggedIn === true) window.location.reload();
-  }, [justLoggedIn]);
-
-  useEffect(() => {
-    if (justLoggedOut === true) window.location.reload();
-  }, [justLoggedOut]);
+  const sendLogout = useMutation({
+    mutationFn: logoutUser,
+  });
 
   const logout = (event) => {
-    setLoggedInUser("no");
-    setJustLoggedOut(true);
-    localStorage.setItem("jwttoken", "loggedout");
+    setLoggedInUser("");
+    dispatch(loggedInUserAdded(loggedInUser));
     event.preventDefault();
+    sendLogout.mutate();
+    window.location.reload();
   };
+
+  useEffect(() => {
+    dispatch(loggedInUserAdded(data));
+    setLoggedInUser(data);
+  }, [data]);
 
   return (
     <Navbar>
@@ -42,9 +46,7 @@ const Header = ({ user, recentlyLoggedIn, isWriting }) => {
         <div className="nav-link">
           <Link to="/">Home</Link>
         </div>
-        {(loggedInUser === "no" ||
-          loggedInUser === "" ||
-          loggedInUser === undefined) && (
+        {(loggedInUser === "" || loggedInUser === undefined) && (
           <>
             <div className="nav-link">
               <Link to="/register">Register</Link>
@@ -55,21 +57,19 @@ const Header = ({ user, recentlyLoggedIn, isWriting }) => {
           </>
         )}
       </Nav>
-      {loggedInUser !== "no" &&
-        loggedInUser !== "" &&
-        loggedInUser !== undefined && (
-          <Nav>
-            {isWriting !== true && (
-              <div className="nav-link">
-                {" "}
-                <Link to="/write">New Post</Link>
-              </div>
-            )}
-            <div className="nav-link" onClick={logout}>
-              Logout {loggedInUser}
+      {loggedInUser !== "" && loggedInUser !== undefined && (
+        <Nav>
+          {isWriting !== true && (
+            <div className="nav-link">
+              {" "}
+              <Link to="/write">New Post</Link>
             </div>
-          </Nav>
-        )}
+          )}
+          <div className="nav-link" onClick={logout}>
+            Logout {loggedInUser}
+          </div>
+        </Nav>
+      )}
     </Navbar>
   );
 };
