@@ -31,7 +31,7 @@ const Header = () => {
   useEffect(() => {
     dispatch(loggedInUserAdded(data));
     setLoggedInUser(data);
-  }, [data]);
+  }, [data, dispatch]);
 
   return (
     <Navbar>
