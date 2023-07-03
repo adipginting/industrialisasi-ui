@@ -8,7 +8,7 @@ import validator from "validator";
 import { passwordStrength } from "check-password-strength";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { api } from './api';
+import { api } from "./api";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -203,12 +203,13 @@ const Register = () => {
 
   const emailSubmitHandler = (event) => {
     const sendVerificationCodeEmail = async () => {
-      const { data } = await api.post("/sendemail", {
+      const { statusText } = await api.post("/email-to-be-registered", {
         email: email,
       });
 
       if (isEmailValid && doesEmailExistsonDb === false) {
-        if (data === true) {
+        console.log(statusText);
+        if (statusText === "OK") {
           setEmailSent(true);
         } else {
           setEmailSent(false);
