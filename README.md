@@ -1,6 +1,6 @@
 # Industrialisasi Interface
 
-This is the interface of Industrialisasi CMS. This interface is mainly developed using HTML, React.js, React-Bootstrap, and some CSS. There is a plan to introduce a more complex and visually enchanting UI using TailwindCSS, but I will not rush to it. This software comes with no support and guarantee. Use it at your own risk.
+This is the interface of Industrialisasi CMS. This interface is mainly developed using HTML, React.js, React-Bootstrap, and some CSS. This software comes with no support and guarantee. Use it at your own risk.
 
 ## To run it on your local computer, use this:
     git clone https://github.com/adipginting/industrialisasi-interface
