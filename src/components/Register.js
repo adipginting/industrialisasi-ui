@@ -140,9 +140,9 @@ const Register = () => {
   };
 
   const onSubmitHandler = (event) => {
-    const postLoginInfo = async (_loginInfo_) => {
+    const postLoginInfo = async (loginInfo) => {
       try {
-        await api.post("/register", _loginInfo_);
+        await api.post("/register", loginInfo);
       } catch (error) {
         console.error(error);
       }
@@ -163,14 +163,17 @@ const Register = () => {
           username: username,
           password: password,
         };
-        await postLoginInfo(loginInfo);
+
+        postLoginInfo(loginInfo);
+        event.preventDefault();
         setEmail("");
         setEmailValidity(false);
         setUsername("");
         setUsernameValidity(false);
         setPassword("");
         setPasswordRepeat("");
-        event.preventDefault();
+        setEmailSent(false);
+        setVerifierCodeValidy(false);
       } else if (areRegistrationFieldsValid() === false) {
         alert("Please conform to the warnings and errors before submitting.");
         event.preventDefault();
@@ -288,9 +291,9 @@ const Register = () => {
       )}
       {isEmailSent === true && isVerifierCodeValid === false && (
         <Form onSubmit={submitVerifierCode}>
-          <p className="mt-2">
+          <div className="mt-2">
             <p>Industrialisasi registration. </p>
-          </p>
+          </div>
           <div className="mb-2">
             <p>
               Please check <span className="go">{email}'s </span> inbox/spam
@@ -421,7 +424,8 @@ const Register = () => {
                   <span role="img" aria-label="warning">
                     ⚠️
                   </span>
-                  Password is {passwordStrength(passwordRepeat).id}
+                  Password is{" "}
+                  {passwordStrength(passwordRepeat).value.toLowerCase()}
                 </div>
               )}
 
