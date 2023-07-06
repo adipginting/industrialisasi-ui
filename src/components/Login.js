@@ -12,10 +12,11 @@ import "../css/custom.css";
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoginSuccessful, setIsLoginSuccessful] = useState(false);
   const loggedInUser = useSelector((state) => state.login.loggedInUser);
 
-  const sendLogout = useMutation({
-    mutationFn: loginUser(),
+  const sendLogin = useMutation({
+    mutationFn: loginUser,
   });
 
   const navigate = useNavigate();
@@ -57,7 +58,14 @@ const Login = () => {
   const onSubmitHandler = (event) => {
     const postLoginInfo = async (loginInfo) => {
       try {
-        sendLogout.mutate(loginInfo);
+        const { data } = await sendLogin.mutateAsync(loginInfo);
+        if (data === true) {
+          setIsLoginSuccessful(true);
+          window.location.reload();
+        } else if (data === false) {
+          setIsLoginSuccessful(false);
+          alert("Username or password is invalid.");
+        }
       } catch (error) {
         console.error(error);
       }
@@ -65,25 +73,25 @@ const Login = () => {
 
     const onSubmit = async () => {
       if (username === "" || password === "") {
+        event.preventDefault();
         alert("Please fill all of the fields before submitting.");
-        event.preventDefault();
       } else if (areLoginFieldsValid() === false) {
-        alert("Password or Username is not valid.");
         event.preventDefault();
+        alert("Password or Username is not valid.");
       } else if (areLoginFieldsValid()) {
+        event.preventDefault();
         const loginInfo = {
           username: username,
           password: password,
         };
         await postLoginInfo(loginInfo);
-        setUsername("");
-        setPassword("");
-        event.preventDefault();
-        window.location.reload();
+        // setUsername("");
+        // setPassword("");
       }
     };
-    onSubmit(); //call onsubmit function which is an async function.
+
     event.preventDefault();
+    onSubmit(); //call onsubmit function which is an async function.
   };
 
   return (

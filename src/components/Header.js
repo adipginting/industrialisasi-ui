@@ -21,9 +21,9 @@ const Header = () => {
   });
 
   const logout = (event) => {
+    event.preventDefault();
     setLoggedInUser("");
     dispatch(loggedInUserAdded(loggedInUser));
-    event.preventDefault();
     sendLogout.mutate();
     window.location.reload();
   };
