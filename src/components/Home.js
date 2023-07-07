@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
+import { useMutation } from "@tanstack/react-query";
+import { retrieveXNumberOfPosts } from "./api";
 
-const Post = ({ title, author, postedAt, lastEditAt, post }) => {
+const Post = ({ title, author, postedAt, lastEditAt, content }) => {
   const jsDate = (pgDate) => {
     return new Date(pgDate).toLocaleDateString();
   };
@@ -15,7 +17,7 @@ const Post = ({ title, author, postedAt, lastEditAt, post }) => {
           <span>(last edit on {jsDate(lastEditAt)})</span>
         )}
       </p>
-      <div>{post}</div>
+      <div>{content}</div>
     </div>
   );
 };
@@ -23,6 +25,17 @@ const Post = ({ title, author, postedAt, lastEditAt, post }) => {
 const Home = () => {
   const [posts, setPosts] = useState([]);
   const [noPosts, setNoPosts] = useState(5);
+  const retrievePosts = useMutation({
+    mutationFn: retrieveXNumberOfPosts,
+  });
+
+  useEffect(() => {
+    const retrievePostsAsync = async () => {
+      const data = await retrievePosts.mutateAsync(noPosts);
+      setPosts(data);
+    };
+    retrievePostsAsync();
+  }, [noPosts, setPosts]);
 
   const morePosts = (event) => {
     setNoPosts(noPosts + 5);
@@ -39,7 +52,7 @@ const Home = () => {
             author={post.Username}
             postedAt={post.PostedAt}
             lastEditAt={post.LastEditedAt}
-            post={post.Post}
+            content={post.content}
           />
         );
       })}

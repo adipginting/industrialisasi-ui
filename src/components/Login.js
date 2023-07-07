@@ -12,7 +12,6 @@ import "../css/custom.css";
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoginSuccessful, setIsLoginSuccessful] = useState(false);
   const loggedInUser = useSelector((state) => state.login.loggedInUser);
 
   const sendLogin = useMutation({
@@ -25,7 +24,6 @@ const Login = () => {
     if (loggedInUser !== "") {
       navigate("/");
     }
-    //    console.log("Loggedin user is ", loggedInUser === "");
   }, [loggedInUser, navigate]);
 
   const usernameHandler = (event) => {
@@ -60,10 +58,8 @@ const Login = () => {
       try {
         const { data } = await sendLogin.mutateAsync(loginInfo);
         if (data === true) {
-          setIsLoginSuccessful(true);
           window.location.reload();
         } else if (data === false) {
-          setIsLoginSuccessful(false);
           alert("Username or password is invalid.");
         }
       } catch (error) {

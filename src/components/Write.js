@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Col, Row, Button, Form } from "react-bootstrap";
-import Header from "./Header";
 import { api } from "../components/api";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../css/custom.css";
@@ -32,7 +31,11 @@ const Login = () => {
   const onSubmitHandler = (event) => {
     const postThePost = async () => {
       try {
-        const thePost = { title: title, content: content };
+        const thePost = {
+          title: title,
+          content: content,
+          username: loggedInUser,
+        };
         const { data } = await api.post("/post", thePost);
         console.log(data);
       } catch (error) {
@@ -47,9 +50,7 @@ const Login = () => {
   return (
     <Container fluid="lg">
       <Row>
-        <Col></Col>
         <Col md={8}>
-          <Header user={loggedInUser} isWriting={true} />
           <Form onSubmit={onSubmitHandler}>
             <p className="mt-2">Write new post. </p>
             <Form.Group className="mb-2">
@@ -74,7 +75,6 @@ const Login = () => {
             <Button type="submit">Publish post</Button>
           </Form>
         </Col>
-        <Col md></Col>
       </Row>
     </Container>
   );
