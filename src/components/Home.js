@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Button } from "react-bootstrap";
 import { useMutation } from "@tanstack/react-query";
 import { retrieveXNumberOfPosts } from "./api";
@@ -10,7 +10,7 @@ const Post = ({ title, author, postedAt, lastEditAt, content }) => {
 
   return (
     <div>
-      <h1>{title}</h1>
+      <h2>{title}</h2>
       <p>
         An article by {author} on {jsDate(postedAt)}{" "}
         {lastEditAt !== null && (
@@ -25,17 +25,23 @@ const Post = ({ title, author, postedAt, lastEditAt, content }) => {
 const Home = () => {
   const [posts, setPosts] = useState([]);
   const [noPosts, setNoPosts] = useState(5);
-  const retrievePosts = useMutation({
-    mutationFn: retrieveXNumberOfPosts,
-  });
+
+  // eslint-disable-next-line
+  const retrievePosts = useCallback(
+    useMutation({
+      mutationFn: retrieveXNumberOfPosts,
+    }),
+    []
+  );
 
   useEffect(() => {
     const retrievePostsAsync = async () => {
       const data = await retrievePosts.mutateAsync(noPosts);
+      console.log(data);
       setPosts(data);
     };
     retrievePostsAsync();
-  }, [noPosts, setPosts]);
+  }, [noPosts, setPosts, retrievePosts]);
 
   const morePosts = (event) => {
     setNoPosts(noPosts + 5);
@@ -47,11 +53,11 @@ const Home = () => {
       {posts.map((post) => {
         return (
           <Post
-            key={post.PostId}
-            title={post.Title}
-            author={post.Username}
-            postedAt={post.PostedAt}
-            lastEditAt={post.LastEditedAt}
+            key={post.postid}
+            title={post.title}
+            author={post.username}
+            postedAt={post.postedat}
+            lastEditAt={post.lasteditedat}
             content={post.content}
           />
         );
