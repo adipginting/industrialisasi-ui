@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import { useMutation } from "@tanstack/react-query";
-import { retrieveXNumberOfPosts } from "./api";
+import { retrieveSomeNumberOfPosts } from "./api";
+import { v4 } from "uuid";
 
 const Post = ({ title, author, postedAt, lastEditAt, content }) => {
   const jsDate = (pgDate) => {
@@ -21,9 +22,11 @@ const Post = ({ title, author, postedAt, lastEditAt, content }) => {
       </p>
       <div>
         {contentArray.map((paragraph) => {
-          if (paragraph != "") {
-            return <p>{paragraph}</p>;
+          if (paragraph !== "") {
+            const id = v4();
+            return <p key={id}>{paragraph}</p>;
           }
+          return "";
         })}
       </div>
     </div>
@@ -34,22 +37,15 @@ const Home = () => {
   const [posts, setPosts] = useState([]);
   const [noPosts, setNoPosts] = useState(5);
 
-  // eslint-disable-next-line
-  const retrievePosts = useCallback(
-    useMutation({
-      mutationFn: retrieveXNumberOfPosts,
-    }),
-    []
-  );
+  const { mutateAsync: getPosts } = useMutation(retrieveSomeNumberOfPosts);
 
   useEffect(() => {
     const retrievePostsAsync = async () => {
-      const data = await retrievePosts.mutateAsync(noPosts);
-      console.log(data);
+      const data = await getPosts(noPosts);
       setPosts(data);
     };
     retrievePostsAsync();
-  }, [noPosts, setPosts, retrievePosts]);
+  }, [noPosts, setPosts, getPosts]);
 
   const morePosts = (event) => {
     setNoPosts(noPosts + 5);

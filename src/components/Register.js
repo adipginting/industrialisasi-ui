@@ -3,12 +3,13 @@ import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../css/custom.css";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import validator from "validator";
 import { passwordStrength } from "check-password-strength";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { api } from "./api";
+import { api, checkUsername, checkEmail } from "./api";
+import { useMutation } from "@tanstack/react-query";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -26,22 +27,15 @@ const Register = () => {
 
   const loggedInUser = useSelector((state) => state.login.loggedInUser);
   const navigator = useNavigate();
+  const { mutateAsync: doCheckEmail } = useMutation(checkEmail);
+  const { mutateAsync: doCheckUsername } = useMutation(checkUsername);
 
-  useEffect(() => {
-    if (loggedInUser !== "") {
-      navigator("/");
-    }
-  }, [loggedInUser, navigator]);
-
-  //fetch email
-  useEffect(() => {
-    const checkEmail = async (_email_) => {
+  const memoizedCheckEmail = useCallback(() => {
+    const checkEmail = async () => {
       try {
-        if (validator.isEmail(_email_)) {
+        if (validator.isEmail(email)) {
           setEmailValidity(true);
-          const { data } = await api.post("/email", {
-            email: _email_,
-          });
+          const data = await doCheckEmail(email);
           if (data === true) {
             setEmailExistenceOnDb(true);
           } else {
@@ -54,43 +48,43 @@ const Register = () => {
         console.error(error);
       }
     };
+    checkEmail();
+  }, [email, doCheckEmail]);
 
-    const delay = setTimeout(() => {
-      checkEmail(email);
-    }, 500);
-    return () => {
-      clearTimeout(delay);
-    };
-  }, [email]);
-
-  useEffect(() => {
-    const checkUsername = async (_username_) => {
+  const memoizedCheckUsername = useCallback(() => {
+    const checkUsername = async () => {
       try {
-        if (validator.isAlphanumeric(_username_) && _username_.length > 3) {
+        if (validator.isAlphanumeric(username) && username.length > 3) {
           setUsernameValidity(true);
-          const { data } = await api.post("/username", {
-            username: _username_,
-          });
+          const data = await doCheckUsername(username);
           if (data === true) {
             setUsernameExistenceOnDb(true);
           } else {
             setUsernameExistenceOnDb(false);
           }
-        } else if (validator.isAlphanumeric(_username_) === false) {
+        } else if (validator.isAlphanumeric(username) === false) {
           setUsernameValidity(false);
         }
       } catch (error) {
         console.error(error);
       }
     };
+    checkUsername();
+  }, [username, doCheckUsername]);
 
-    const delay = setTimeout(() => {
-      checkUsername(username);
-    }, 500);
-    return () => {
-      clearTimeout(delay);
-    };
-  }, [username]);
+  useEffect(() => {
+    if (loggedInUser !== "") {
+      navigator("/");
+    }
+  }, [loggedInUser, navigator]);
+
+  useEffect(() => {
+    memoizedCheckEmail();
+  }, [memoizedCheckEmail]);
+
+  useEffect(() => {
+    memoizedCheckUsername();
+  }, [memoizedCheckUsername]);
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -105,28 +99,28 @@ const Register = () => {
   }, [isEmailSent]);
 
   const emailHandler = (event) => {
-    setEmail(event.target.value);
     event.preventDefault();
+    setEmail(event.target.value);
   };
 
   const usernameHandler = (event) => {
-    setUsername(event.target.value);
     event.preventDefault();
+    setUsername(event.target.value);
   };
 
   const passwordHandler = (event) => {
-    setPassword(event.target.value);
     event.preventDefault();
+    setPassword(event.target.value);
   };
 
   const passwordRepeatHandler = (event) => {
-    setPasswordRepeat(event.target.value);
     event.preventDefault();
+    setPasswordRepeat(event.target.value);
   };
 
   const verifierHandler = (event) => {
-    setVerifier(event.target.value);
     event.preventDefault();
+    setVerifier(event.target.value);
   };
 
   const isPasswordValid = () => {
@@ -354,7 +348,7 @@ const Register = () => {
                 <span role="img" aria-label="warning">
                   ⚠️{" "}
                 </span>{" "}
-                Username has to be consisted of only alphabets and numbers.
+                Username has to be consisted of only alphabets and/or numbers.
               </div>
             )}
             {username.length <= 3 && username !== "" && (

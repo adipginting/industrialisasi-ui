@@ -34,7 +34,6 @@ const Login = () => {
         const thePost = {
           title: title,
           content: content,
-          username: loggedInUser,
         };
         const { data } = await api.post("/post", thePost);
         console.log(data);
