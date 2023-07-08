@@ -8,6 +8,8 @@ const Post = ({ title, author, postedAt, lastEditAt, content }) => {
     return new Date(pgDate).toLocaleDateString();
   };
 
+  const contentArray = content.split("\n");
+
   return (
     <div>
       <h2>{title}</h2>
@@ -17,7 +19,13 @@ const Post = ({ title, author, postedAt, lastEditAt, content }) => {
           <span>(last edit on {jsDate(lastEditAt)})</span>
         )}
       </p>
-      <div>{content}</div>
+      <div>
+        {contentArray.map((paragraph) => {
+          if (paragraph != "") {
+            return <p>{paragraph}</p>;
+          }
+        })}
+      </div>
     </div>
   );
 };
