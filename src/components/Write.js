@@ -56,7 +56,8 @@ const Write = () => {
       <Row>
         <Col md={8}>
           <Form onSubmit={onSubmitHandler}>
-            <p className="mt-2">Write new post. </p>
+            { canUserPost ? <p className="mt-2">Write new post. </p>:
+            <p className="mt-2">You are currently restricted from writing new post. Contact adi.industrialisasi@gmail.com for more information.</p>}
             <Form.Group className="mb-2">
               <Form.Label>Post title </Form.Label>
               <Form.Control
@@ -64,6 +65,7 @@ const Write = () => {
                 placeholder="title"
                 onChange={titleHandler}
                 value={title}
+                disabled={!canUserPost}
               ></Form.Control>
             </Form.Group>
             <Form.Group className="mb-2">
@@ -74,6 +76,7 @@ const Write = () => {
                 placeholder="start typing content"
                 onChange={contentHandler}
                 value={content}
+                disabled={!canUserPost}
               ></Form.Control>
             </Form.Group>
             <Button type="submit" disabled={!canUserPost} >Publish post</Button>
