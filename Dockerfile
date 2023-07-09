@@ -1,4 +1,4 @@
-FROM node:18 as build
+FROM node:latest as build
 WORKDIR /usr/local/interface
 COPY package*.json ./
 COPY . .
