@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Col, Row, Button, Form } from "react-bootstrap";
-import { api } from "../components/api";
+import { api, getCanUserPost } from "../components/api";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../css/custom.css";
 import { useSelector } from "react-redux";
+import { useQuery } from "@tanstack/react-query";
 
-const Login = () => {
+const Write = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const loggedInUser = useSelector((state) => state.login.loggedInUser);
   const navigate = useNavigate();
+  const { canUserPost } = useQuery(
+    {queryKey: ["canUserPost"],
+      queryFn: getCanUserPost}
+  )
 
   useEffect(() => {
     if (loggedInUser === "") {
@@ -71,11 +76,11 @@ const Login = () => {
                 value={content}
               ></Form.Control>
             </Form.Group>
-            <Button type="submit">Publish post</Button>
+            <Button type="submit" disabled={!canUserPost} >Publish post</Button>
           </Form>
         </Col>
       </Row>
     </Container>
   );
 };
-export default Login;
+export default Write;
