@@ -24,7 +24,7 @@ Alternatively, I created this repository to run the whole website (the database 
 - [x] Users can login.
 - [x] If users are logged in, register and login URI is redictered to home page.
 - [x] Users can read posts.
-- [ ] Users can write posts.
+- [x] Users can write posts.
 - [ ] Users can write comments.
 - [ ] Reply comments in one level thread.
 - [ ] Improve styling.
