@@ -12,10 +12,12 @@ const Write = () => {
   const [content, setContent] = useState("");
   const loggedInUser = useSelector((state) => state.login.loggedInUser);
   const navigate = useNavigate();
-  const { canUserPost } = useQuery(
-    {queryKey: ["canUserPost"],
-      queryFn: getCanUserPost}
-  )
+  const can_user_post = useQuery({
+    queryKey: ["canUserPost"],
+    queryFn: getCanUserPost,
+  });
+
+  const canUserPost = can_user_post;
 
   useEffect(() => {
     if (loggedInUser === "") {
@@ -36,11 +38,11 @@ const Write = () => {
   const onSubmitHandler = (event) => {
     const postThePost = async () => {
       try {
-        const thePost = {
+        const post = {
           title: title,
           content: content,
         };
-        const { data } = await api.post("/post", thePost);
+        const { data } = await api.post("/post", post);
         console.log(data);
       } catch (error) {
         console.error(error);
@@ -56,8 +58,14 @@ const Write = () => {
       <Row>
         <Col md={8}>
           <Form onSubmit={onSubmitHandler}>
-            { canUserPost ? <p className="mt-2">Write new post. </p>:
-            <p className="mt-2">You are currently restricted from writing new post. Contact adi.industrialisasi@gmail.com for more information.</p>}
+            {canUserPost ? (
+              <p className="mt-2">Write new post. </p>
+            ) : (
+              <p className="mt-2">
+                You are currently restricted from writing new post. Contact
+                adi.industrialisasi@gmail.com for more information.
+              </p>
+            )}
             <Form.Group className="mb-2">
               <Form.Label>Post title </Form.Label>
               <Form.Control
@@ -79,7 +87,9 @@ const Write = () => {
                 disabled={!canUserPost}
               ></Form.Control>
             </Form.Group>
-            <Button type="submit" disabled={!canUserPost} >Publish post</Button>
+            <Button type="submit" disabled={!canUserPost}>
+              Publish post
+            </Button>
           </Form>
         </Col>
       </Row>
