@@ -1,16 +1,16 @@
-# Industrialisasi Interface
+# Industrialisasi UI
 
-This is the interface of Industrialisasi CMS. This interface is mainly developed using HTML, React.js, React-Bootstrap, and some CSS. This software comes with no support and guarantee. Use it at your own risk.
+This is the user interface (UI) of Industrialisasi. This UI is mainly developed using HTML, React.js, React-Bootstrap, and some CSS. This software comes with no support and guarantee. Use it at your own risk.
 
 ## To run it on your local computer, use this:
-    git clone https://github.com/adipginting/industrialisasi-interface
-    cd industrialisasi-interface
+    git clone https://github.com/adipginting/industrialisasi-ui
+    cd industrialisasi-ui
     npm install
     npm start
     
 ## To run it via docker:
-    git clone https://github.com/adipginting/industrialisasi-interface
-    cd industrialisasi-interface
+    git clone https://github.com/adipginting/industrialisasi-ui
+    cd industrialisasi-ui
     sudo docker run -p 3000:3000 -d
     
 ## To run it via docker compose:
