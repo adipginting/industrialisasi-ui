@@ -1,12 +1,9 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL:
-    window.location.host === "industrialisasi.site"
-      ? "https://api.industrialisasi.site/blog"
-      : "http://localhost:4000",
+  baseURL: "https://api.industrialisasi.site/blog",
   headers: {
-    "Content-Type": "application/json",
+    "Content-Type": "application/json"
   },
   withCredentials: true,
 });
