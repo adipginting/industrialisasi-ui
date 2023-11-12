@@ -5,11 +5,17 @@ import { retrieveSomeNumberOfPosts } from "./api";
 import { v4 } from "uuid";
 
 const Post = ({ title, author, postedAt, lastEditAt, content }) => {
+  const [isContracted, setIsContracted] = useState(true);
   const jsDate = (pgDate) => {
     return new Date(pgDate).toLocaleDateString();
   };
 
   const contentArray = content.split("\n");
+
+  function expandPost(event) {
+    setIsContracted(false);
+    event.preventDefault();
+  }
 
   return (
     <div>
@@ -20,15 +26,25 @@ const Post = ({ title, author, postedAt, lastEditAt, content }) => {
           <span>(last edit on {jsDate(lastEditAt)})</span>
         )}
       </p>
-      <div>
-        {contentArray.map((paragraph) => {
-          if (paragraph !== "") {
-            const id = v4();
-            return <p key={id}>{paragraph}</p>;
-          }
-          return "";
-        })}
-      </div>
+      {isContracted === true && (
+        <div>
+          <p>
+            {contentArray[0]} <span onClick={expandPost}>(more)</span>
+          </p>
+        </div>
+      )}
+
+      {isContracted === false && (
+        <div>
+          {contentArray.map((paragraph) => {
+            if (paragraph !== "") {
+              const id = v4();
+              return <p key={id}>{paragraph}</p>;
+            }
+            return "";
+          })}
+        </div>
+      )}
     </div>
   );
 };
