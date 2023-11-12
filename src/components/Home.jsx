@@ -3,6 +3,7 @@ import { Button } from "react-bootstrap";
 import { useMutation } from "@tanstack/react-query";
 import { retrieveSomeNumberOfPosts } from "./api";
 import { v4 } from "uuid";
+import '../css/custom.css';
 
 const Post = ({ title, author, postedAt, lastEditAt, content }) => {
   const [isContracted, setIsContracted] = useState(true);
@@ -29,7 +30,7 @@ const Post = ({ title, author, postedAt, lastEditAt, content }) => {
       {isContracted === true && (
         <div>
           <p>
-            {contentArray[0]} <span onClick={expandPost}>(more)</span>
+            {contentArray[0]} <span className='assist' onClick={expandPost}>(more)</span>
           </p>
         </div>
       )}
