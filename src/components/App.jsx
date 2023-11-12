@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Home, Register, Login, Write, About, Header } from "./";
+import { Home, Register, Login, Write, About, Header } from ".";
 import { Container, Row, Col } from "react-bootstrap";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 

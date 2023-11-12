@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Col, Row, Button, Form } from "react-bootstrap";
-import { api, getCanUserPost } from "../components/api";
+import { api, getCanUserPost } from "./api";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../css/custom.css";
 import { useSelector } from "react-redux";
