@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Factory Favicon",
+  "name": "Factory emoji favicons from Twitter Twemoji (https://github.com/twitter/twemoji). The graphics's copyright belongs to Twitter, Inc and other contributors and they are licensed under CC-BY 4.0 (https://creativecommons.org/licenses/by/4.0/)",
   "icons": [
     {
       "src": "favicon.ico",
