@@ -387,7 +387,7 @@ const Register = () => {
               onChange={passwordHandler}
               value={password}
             ></Form.Control>
-            {isPasswordValid() && passwordStrength(password).id < 1 && (
+            {isPasswordValid() && passwordStrength(password).id < 2 && (
               <div className="assist">
                 <span role="img" aria-label="warning">
                   ⚠️
@@ -414,7 +414,7 @@ const Register = () => {
               value={passwordRepeat}
             ></Form.Control>
             {isPasswordRepeatValid() &&
-              passwordStrength(passwordRepeat).id < 1 && (
+              passwordStrength(passwordRepeat).id < 2 && (
                 <div className="assist">
                   <span role="img" aria-label="warning">
                     ⚠️
@@ -444,8 +444,8 @@ const Register = () => {
             {isPasswordRepeatValid() &&
               isPasswordValid() &&
               isPasswordRepeated() === true &&
-              passwordStrength(password).id > 0 &&
-              passwordStrength(passwordRepeat).id > 0 && (
+              passwordStrength(password).id > 1 &&
+              passwordStrength(passwordRepeat).id > 1 && (
                 <div className="go">
                   <span role="img" aria-label="correct">
                     ✔️{" "}
