@@ -1,8 +1,4 @@
 import React from "react";
-import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import "../css/custom.css";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
 import { useState, useEffect, useCallback } from "react";
 import validator from "validator";
 import { passwordStrength } from "check-password-strength";

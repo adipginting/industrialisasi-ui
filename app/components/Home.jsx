@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "react-bootstrap";
 import { useMutation } from "@tanstack/react-query";
 import { retrieveSomeNumberOfPosts } from "./api";
 import { v4 } from "uuid";
-import '../css/custom.css';
 
 const Post = ({ title, author, postedAt, lastEditAt, content }) => {
   const [isContracted, setIsContracted] = useState(true);

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Navbar, Nav } from "react-bootstrap";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getUsername, logoutUser } from "./api";
 import { loggedInUserAdded } from "./redux";
@@ -34,31 +33,29 @@ const Header = () => {
   }, [data, dispatch]);
 
   return (
-    <Navbar>
-      <Navbar.Brand>
-        <Link to="/">
-          <span role="img" aria-label="factory">
-            🏭
-          </span>
-        </Link>
-      </Navbar.Brand>
-      <Nav>
-        <div className="nav-link">
-          <Link to="/">Home</Link>
-        </div>
-        {(loggedInUser === "" || loggedInUser === undefined) && (
-          <>
-            <div className="nav-link">
-              <Link to="/register">Register</Link>
-            </div>
-            <div className="nav-link">
-              <Link to="/login">Login</Link>
-            </div>
-          </>
-        )}
-      </Nav>
-      {loggedInUser !== "" && loggedInUser !== undefined && (
-        <Nav>
+    <div>
+      <Link to="/">
+        <span role="img" aria-label="factory">
+          🏭
+        </span>
+      </Link>
+
+      <div className="nav-link">
+        <Link to="/">Home</Link>
+      </div>
+      {(loggedInUser === "" || loggedInUser === undefined) && (
+        <>
+          <div className="nav-link">
+            <Link to="/register">Register</Link>
+          </div>
+          <div className="nav-link">
+            <Link to="/login">Login</Link>
+          </div>
+        </>
+      )}
+
+      {/* {loggedInUser !== "" && loggedInUser !== undefined && (
+       
           {isWriting !== true && (
             <div className="nav-link">
               {" "}
@@ -68,9 +65,9 @@ const Header = () => {
           <div className="nav-link" onClick={logout}>
             Logout {loggedInUser}
           </div>
-        </Nav>
-      )}
-    </Navbar>
+     
+      )} */}
+    </div>
   );
 };
 

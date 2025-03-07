@@ -1,4 +1,4 @@
-import Login from "./Login";
+import Login from "./Login.tsx";
 import Register from "./Register";
 import Header from "./Header";
 import Home from "./Home";
