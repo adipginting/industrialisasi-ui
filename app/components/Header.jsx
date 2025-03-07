@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { getUsername, logoutUser } from "./api";
-import { loggedInUserAdded } from "./redux";
+import { getUsername, logoutUser } from "./api/index.js";
+import { loggedInUserAdded } from "./redux/index.js";
 import { useDispatch } from "react-redux";
+import { Link } from "react-router";
 
 const Header = () => {
   const [loggedInUser, setLoggedInUser] = useState("");
@@ -54,19 +54,19 @@ const Header = () => {
         </>
       )}
 
-      {/* {loggedInUser !== "" && loggedInUser !== undefined && (
+      {loggedInUser !== "" && loggedInUser !== undefined && (
        
-          {isWriting !== true && (
-            <div className="nav-link">
-              {" "}
-              <Link to="/write">New Post</Link>
-            </div>
-          )}
+          // {!isWriting && (
+          //   <div className="nav-link">
+          //     {" "}
+          //     <Link to="/write">New Post</Link>
+          //   </div>
+          // )}
           <div className="nav-link" onClick={logout}>
             Logout {loggedInUser}
           </div>
      
-      )} */}
+      )}
     </div>
   );
 };

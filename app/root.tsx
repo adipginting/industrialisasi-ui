@@ -7,6 +7,10 @@ import {
   ScrollRestoration,
 } from "react-router";
 
+import { Provider } from "react-redux";
+import { store } from "./components/redux";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 import type { Route } from "./+types/root";
 import "./app.css";
 
@@ -24,6 +28,7 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const queryClient = new QueryClient();
   return (
     <html lang="en">
       <head>
@@ -33,9 +38,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
+        <QueryClientProvider client={queryClient}>
+          <Provider store={store}>
+            {children}
+            <ScrollRestoration />
+            <Scripts />
+          </Provider>
+        </QueryClientProvider>
       </body>
     </html>
   );
