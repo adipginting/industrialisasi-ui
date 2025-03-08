@@ -33,22 +33,22 @@ const Header = () => {
   }, [data, dispatch]);
 
   return (
-    <div>
+    <div className="flex flex-row gap-x-3">
       <Link to="/">
         <span role="img" aria-label="factory">
           🏭
         </span>
       </Link>
 
-      <div className="nav-link">
+      <div className="">
         <Link to="/">Home</Link>
       </div>
       {(loggedInUser === "" || loggedInUser === undefined) && (
         <>
-          <div className="nav-link">
+          <div className="">
             <Link to="/register">Register</Link>
           </div>
-          <div className="nav-link">
+          <div className="">
             <Link to="/login">Login</Link>
           </div>
         </>
